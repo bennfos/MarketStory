@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using BackendCapstone.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -34,219 +35,84 @@ namespace BackendCapstone.Data
                 .Property(b => b.Timestamp)
                 .HasDefaultValueSql("GETDATE()");
 
-            // Restrict deletion of related order when OrderProducts entry is removed
-            modelBuilder.Entity<Order>()
-                .HasMany(o => o.OrderProducts)
-                .WithOne(l => l.Order)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Product>()
-                .Property(b => b.DateCreated)
+           
+            modelBuilder.Entity<Task>()
+                .Property(b => b.Timestampe)
                 .HasDefaultValueSql("GETDATE()");
 
-            // Restrict deletion of related product when OrderProducts entry is removed
-            modelBuilder.Entity<Product>()
-                .HasMany(o => o.OrderProducts)
-                .WithOne(l => l.Product)
-                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<StoryBoard>()
+               .Property(b => b.Timestamp)
+               .HasDefaultValueSql("GETDATE()");
 
-            modelBuilder.Entity<PaymentType>()
-                .Property(b => b.DateCreated)
-                .HasDefaultValueSql("GETDATE()");
 
-            ApplicationUser user = new ApplicationUser
+            ApplicationUser adminUser = new ApplicationUser
             {
                 FirstName = "Admina",
                 LastName = "Straytor",
-                StreetAddress = "123 Infinity Way",
-                UserName = "admin@admin.com",
-                NormalizedUserName = "ADMIN@ADMIN.COM",
-                Email = "admin@admin.com",
-                NormalizedEmail = "ADMIN@ADMIN.COM",
+                UserName = "admin@marketing.com",
+                NormalizedUserName = "ADMIN@MARKETING.COM",
+                Email = "admin@marketing.com",
+                NormalizedEmail = "ADMIN@MARKETING.COM",
                 EmailConfirmed = true,
                 LockoutEnabled = false,
                 SecurityStamp = "7f434309-a4d9-48e9-9ebb-8803db794577",
                 Id = "00000000-ffff-ffff-ffff-ffffffffffff"
             };
-            var passwordHash = new PasswordHasher<ApplicationUser>();
-            user.PasswordHash = passwordHash.HashPassword(user, "Admin8*");
-            modelBuilder.Entity<ApplicationUser>().HasData(user);
+            var adminPasswordHash = new PasswordHasher<ApplicationUser>();
+            adminUser.PasswordHash = adminPasswordHash.HashPassword(adminUser, "Admin8*");
+            modelBuilder.Entity<ApplicationUser>().HasData(adminUser);
 
-            modelBuilder.Entity<PaymentType>().HasData(
-                new PaymentType()
+            modelBuilder.Entity < ClientPage>().HasData(
+                new ClientPage()
                 {
-                    PaymentTypeId = 1,
-                    UserId = user.Id,
-                    Description = "American Express",
-                    AccountNumber = "86753095551212"
+                    Id = 1,
+                    Name = "Bink's Sports Bar & Grill",
+                    Description = "Bink’s is Springfield’s hang out spot If you’re not hanging at Bink’s, you’re missing out. Come join the party!",
                 },
-                new PaymentType()
+                new ClientPage()
                 {
-                    PaymentTypeId = 2,
-                    UserId = user.Id,
-                    Description = "Discover",
-                    AccountNumber = "4102948572991"
+                    Id = 2,
+                    Name = "Corbin Creek Greenhouse",
+                    Description = "At Corbin Creek we grow quality. Proven Winners makes up 99% of our inventory, so you're buying plants that are hearty, beautiful and engineered to stay that way! Growing plants is our first love and you can reap the benefits.  Our staff is always ready to help you with ideas and real experience to make your outdoor space easy to care for and a pleasure for you and your friends to enjoy.",
                 }
             );
 
-            modelBuilder.Entity<ProductType>().HasData(
-                new ProductType()
+            modelBuilder.Entity<UserType>().HasData(
+                new UserType()
                 {
-                    ProductTypeId = 1,
-                    Label = "Sporting Goods"
+                    Id = 1,
+                    Type = "Admin"
                 },
-                new ProductType()
+                new UserType()
                 {
-                    ProductTypeId = 2,
-                    Label = "Appliances"
+                    Id = 2,
+                    Type = "Marketing Rep"
                 },
-                new ProductType()
+                new UserType()
                 {
-                    ProductTypeId = 3,
-                    Label = "Tools"
-                },
-                new ProductType()
-                {
-                    ProductTypeId = 4,
-                    Label = "Games"
-                },
-                new ProductType()
-                {
-                    ProductTypeId = 5,
-                    Label = "Music"
-                },
-                new ProductType()
-                {
-                    ProductTypeId = 6,
-                    Label = "Health"
-                },
-                new ProductType()
-                {
-                    ProductTypeId = 7,
-                    Label = "Outdoors"
-                },
-                new ProductType()
-                {
-                    ProductTypeId = 8,
-                    Label = "Beauty"
-                },
-                new ProductType()
-                {
-                    ProductTypeId = 9,
-                    Label = "Shoes"
-                },
-                new ProductType()
-                {
-                    ProductTypeId = 10,
-                    Label = "Automotive"
+                    Id = 3,
+                    Type = "Client"
                 }
             );
 
-            modelBuilder.Entity<Product>().HasData(
-                new Product()
+            modelBuilder.Entity<ClientPageUser>().HasData(
+                new ClientPageUser()
                 {
-                    ProductId = 1,
-                    ProductTypeId = 1,
-                    UserId = user.Id,
-                    Description = "It flies high",
-                    Title = "Kite",
-                    City = "Chicago",
-                    Quantity = 100,
-                    Price = 2.99M
+                    Id = 1,
+                    UserId = adminUser.Id,
+                    ClientPageId = 1
                 },
-                new Product()
-                {
-                    ProductId = 2,
-                    ProductTypeId = 2,
-                    UserId = user.Id,
-                    Description = "It rolls fast",
-                    City = "Chicago",
-                    Title = "Wheelbarrow",
-                    Quantity = 5,
-                    Price = 29.99M
-                },
-                new Product()
-                {
-                    ProductId = 3,
-                    ProductTypeId = 3,
-                    UserId = user.Id,
-                    Description = "It cuts things",
-                    City = "Frisco",
-                    Title = "Saw",
-                    Quantity = 18,
-                    Price = 31.49M
-                },
-                new Product()
-                {
-                    ProductId = 4,
-                    ProductTypeId = 3,
-                    UserId = user.Id,
-                    Description = "It puts holes in things",
-                    City = "Frisco",
-                    Title = "Electric Drill",
-                    Quantity = 12,
-                    Price = 24.89M
-                },
-                new Product()
-                {
-                    ProductId = 5,
-                    ProductTypeId = 3,
-                    UserId = user.Id,
-                    Description = "It puts things together",
-                    City = "New York City",
-                    Title = "Hammer",
-                    Quantity = 32,
-                    Price = 22.69M
-                }
+                 new ClientPageUser()
+                 {
+                     Id = 2,
+                     UserId = adminUser.Id,
+                     ClientPageId = 2
+                 }
             );
-
-            modelBuilder.Entity<Order>().HasData(
-                new Order()
-                {
-                    OrderId = 1,
-                    UserId = user.Id,
-                    PaymentTypeId = null
-                },
-                new Order()
-                {
-                    OrderId = 2,
-                    UserId = user.Id,
-                    PaymentTypeId = null
-                },
-                new Order()
-                {
-                    OrderId = 3,
-                    UserId = user.Id,
-                    PaymentTypeId = null
-                }
-
-            );
-
-            modelBuilder.Entity<OrderProduct>().HasData(
-                new OrderProduct()
-                {
-                    OrderProductId = 1,
-                    OrderId = 1,
-                    ProductId = 1
-                },
-                new OrderProduct()
-                {
-                    OrderProductId = 2,
-                    OrderId = 2,
-                    ProductId = 1
-                },
-                new OrderProduct()
-                {
-                    OrderProductId = 3,
-                    OrderId = 3,
-                    ProductId = 1
-                }
-            );
-
         }
 
 
     }
 }
-    }
-}
+    
+
