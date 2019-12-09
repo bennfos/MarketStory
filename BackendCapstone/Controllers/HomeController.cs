@@ -6,20 +6,54 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using BackendCapstone.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using BackendCapstone.Data;
+using Microsoft.EntityFrameworkCore;
+using BackendCapstone.Models.HomeViewModels;
 
 namespace BackendCapstone.Controllers
-{
+{ 
+    [Authorize]
     public class HomeController : Controller
     {
+        private readonly ApplicationDbContext _context;
         private readonly ILogger<HomeController> _logger;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ApplicationDbContext context, ILogger<HomeController> logger, UserManager<ApplicationUser> userManager)
         {
+            _context = context;
+            _userManager = userManager;
             _logger = logger;
         }
 
-        public IActionResult Index()
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
+
+        public async Task<IActionResult> Index()
         {
+           
+            var currentUser = await GetCurrentUserAsync();
+            if (currentUser.UserTypeId == 1)
+            {
+                var admin = await _context.ApplicationUsers
+                            .Include(u => u.UserType)
+                            .Where(u => u.UserTypeId == 1)
+                            .ToListAsync();
+                var reps = await _context.ApplicationUsers
+                            .Include(u => u.UserType)
+                            .Where(u => u.UserTypeId == 2)
+                            .ToListAsync();
+                var clientPages = await _context.ClientPages
+                            .ToListAsync();
+                var viewModel = new AdminHomeViewModel()
+                {
+                    ClientPages = clientPages,
+                    Reps = reps,
+                    Admins = admin
+                };
+                return View(viewModel);
+            }
             return View();
         }
 

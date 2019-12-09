@@ -109,7 +109,7 @@ namespace BackendCapstone.Migrations
                         {
                             Id = "00000000-ffff-ffff-ffff-ffffffffffff",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "670374be-f924-44ae-a4ce-52bcd25a1d98",
+                            ConcurrencyStamp = "4414f3d8-cf02-474c-a96a-54704ed2c1e3",
                             Email = "admin@marketing.com",
                             EmailConfirmed = true,
                             FirstName = "Admina",
@@ -117,13 +117,43 @@ namespace BackendCapstone.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@MARKETING.COM",
                             NormalizedUserName = "ADMIN@MARKETING.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAELZEiIAkXKGaqrZe7htB69CWVLlcarDknu8Dis1EbyOJkWtQh7PdVh5ptKrrEfTKOw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEHT/sQom9sqKHGGHrR9uFlkF/vMEXAyYNWDK0eXdPxS0Ss9nLJpDjzOb4TzEWVrFQA==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "7f434309-a4d9-48e9-9ebb-8803db794577",
                             TwoFactorEnabled = false,
                             UserName = "admin@marketing.com",
                             UserTypeId = 1
                         });
+                });
+
+            modelBuilder.Entity("BackendCapstone.Models.Chat", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ClientPageId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Text")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Timestamp")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientPageId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Chat");
                 });
 
             modelBuilder.Entity("BackendCapstone.Models.ClientPage", b =>
@@ -144,7 +174,7 @@ namespace BackendCapstone.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ClientPage");
+                    b.ToTable("ClientPages");
 
                     b.HasData(
                         new
@@ -253,11 +283,11 @@ namespace BackendCapstone.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("ClientPageId")
-                        .HasColumnType("int");
-
                     b.Property<bool>("IsRead")
                         .HasColumnType("bit");
+
+                    b.Property<string>("OtherUserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Text")
                         .HasColumnType("nvarchar(max)");
@@ -272,7 +302,7 @@ namespace BackendCapstone.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClientPageId");
+                    b.HasIndex("OtherUserId");
 
                     b.HasIndex("UserId");
 
@@ -526,6 +556,19 @@ namespace BackendCapstone.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("BackendCapstone.Models.Chat", b =>
+                {
+                    b.HasOne("BackendCapstone.Models.ClientPage", "ClientPage")
+                        .WithMany()
+                        .HasForeignKey("ClientPageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BackendCapstone.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
             modelBuilder.Entity("BackendCapstone.Models.ClientPageEvent", b =>
                 {
                     b.HasOne("BackendCapstone.Models.ClientPage", "ClientPage")
@@ -556,11 +599,9 @@ namespace BackendCapstone.Migrations
 
             modelBuilder.Entity("BackendCapstone.Models.Message", b =>
                 {
-                    b.HasOne("BackendCapstone.Models.ClientPage", "ClientPage")
+                    b.HasOne("BackendCapstone.Models.ApplicationUser", "OtherUser")
                         .WithMany()
-                        .HasForeignKey("ClientPageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("OtherUserId");
 
                     b.HasOne("BackendCapstone.Models.ApplicationUser", "User")
                         .WithMany()

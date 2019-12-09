@@ -17,9 +17,10 @@ namespace BackendCapstone.Data
 
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<UserType> UserTypes { get; set; }
-        public DbSet<Message> Messages { get; set; }
+        public DbSet<Chat> Chat { get; set; }
+        public DbSet<Message> Messages { get; set;}
         public DbSet<StoryBoard> StoryBoards { get; set; }
-        public DbSet<ClientPage> ClientPage { get; set; }
+        public DbSet<ClientPage> ClientPages { get; set; }
         public DbSet<Event> Events { get; set; }
         public DbSet<ClientPageEvent> ClientPageEvents { get; set; }
         public DbSet<ClientPageUser> ClientPageUsers { get; set; }
@@ -35,7 +36,11 @@ namespace BackendCapstone.Data
                 .Property(b => b.Timestamp)
                 .HasDefaultValueSql("GETDATE()");
 
-           
+            modelBuilder.Entity<Chat>()
+               .Property(b => b.Timestamp)
+               .HasDefaultValueSql("GETDATE()");
+
+
             modelBuilder.Entity<Task>()
                 .Property(b => b.Timestampe)
                 .HasDefaultValueSql("GETDATE()");
