@@ -19,6 +19,8 @@ namespace BackendCapstone.Models
 
         public string ImgPath { get; set; }
 
+        [Required]
+        [Display(Name = "User Type")]
         public int UserTypeId { get; set; }
 
         public UserType UserType { get; set; }

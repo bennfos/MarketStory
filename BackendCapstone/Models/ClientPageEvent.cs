@@ -7,7 +7,6 @@ namespace BackendCapstone.Models
 {
     public class ClientPageEvent
     {
-
         public int Id { get; set; }
 
         public int ClientPageId { get; set; }
