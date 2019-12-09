@@ -1,0 +1,38 @@
+﻿@model BackendCapstone.Models.HomeViewModels.AdminHomeViewModel
+
+@{
+    ViewData["Title"] = "AdminHome";
+}
+
+<h1>Home</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<div>
+    
+    <div style="display: flex; flex-direction: row; justify-content: right;">
+@foreach (var item in Model.ClientPages) {
+        <div>
+            <div>
+                <div style="margin: 30px; width:400px; height:440px; background-color:lightgray; border-radius:3px;">
+                    <a style="color:#345A6D; " asp-controller="ClientPages" asp-action="Details" asp-route-id="@item.Id">
+                        <div>
+                            <img style="width:400px; height:400px;" asp-append-version="true" src=@item.ImgPath/>
+                        </div>
+                        <div class="clientPage__card__name">
+                            <h3>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </h3>
+                        </div>
+                    </a>
+                <div style="display: flex; align-content:center; justify-content: center;">
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id })  |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                </div>
+                </div>
+            </div>
+        </div>
+}
+    </div>
+</div>

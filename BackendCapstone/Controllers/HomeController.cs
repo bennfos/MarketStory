@@ -32,10 +32,17 @@ namespace BackendCapstone.Controllers
 
         public async Task<IActionResult> Index()
         {
-           
             var currentUser = await GetCurrentUserAsync();
             if (currentUser.UserTypeId == 1)
             {
+                return RedirectToAction(nameof(AdminHome));
+            }
+                return View();
+        }
+
+        public async Task<IActionResult> AdminHome()
+        { 
+            
                 var admin = await _context.ApplicationUsers
                             .Include(u => u.UserType)
                             .Where(u => u.UserTypeId == 1)
@@ -53,8 +60,8 @@ namespace BackendCapstone.Controllers
                     Admins = admin
                 };
                 return View(viewModel);
-            }
-            return View();
+            
+           
         }
 
         public IActionResult Privacy()

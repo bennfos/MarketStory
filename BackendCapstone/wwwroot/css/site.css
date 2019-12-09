@@ -1,6 +1,9 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
+/* Custom CSS */
+
+
 a.navbar-brand {
   white-space: normal;
   text-align: center;
@@ -62,6 +65,24 @@ body {
   /* Margin bottom by footer height */
   margin-bottom: 60px;
 }
+
+
+.clientPage__card {
+    display: flex;
+    height: 300px;
+    width: 420px;
+    border-radius: 2px;
+    flex-direction: column;
+}
+
+img {
+    min-width: 400px;
+    max-width: 400px;
+    min-height: 400px;
+    max-height: 400px;
+}
+
+
 .footer {
   position: absolute;
   bottom: 0;
@@ -69,3 +90,4 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+

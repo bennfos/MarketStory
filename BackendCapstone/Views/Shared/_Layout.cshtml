@@ -22,17 +22,39 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <partial name="_LoginPartial" />
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Client Pages</a>
-                        </li>
-                        @if (user.UserTypeId == 1)
+                        @if (user != null)
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Admin</a>
-                            </li>
+
+                            @if (user.UserTypeId == 1)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="AdminIndex">Home</a>
+                                </li>
+                            }
+                            @if (user.UserTypeId == 2)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="RepIndex">Home</a>
+                                </li>
+                            }
+                            @if (user.UserTypeId == 3)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="ClientPages" asp-action="Index">Home</a>
+                                </li>
+                            }
+                            @if (user.UserTypeId == 1 || user.UserTypeId == 2)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Client Pages</a>
+                                </li>
+                            }
+                            @if (user.UserTypeId == 1)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Admin</a>
+                                </li>
+                            }
                         }
                     </ul>
                 </div>
