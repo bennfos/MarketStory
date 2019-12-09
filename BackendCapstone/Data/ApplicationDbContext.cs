@@ -44,6 +44,23 @@ namespace BackendCapstone.Data
                .Property(b => b.Timestamp)
                .HasDefaultValueSql("GETDATE()");
 
+            modelBuilder.Entity<UserType>().HasData(
+               new UserType()
+               {
+                   Id = 1,
+                   Type = "Admin"
+               },
+               new UserType()
+               {
+                   Id = 2,
+                   Type = "Marketing Rep"
+               },
+               new UserType()
+               {
+                   Id = 3,
+                   Type = "Client"
+               }
+           );
 
             ApplicationUser adminUser = new ApplicationUser
             {
@@ -56,7 +73,8 @@ namespace BackendCapstone.Data
                 EmailConfirmed = true,
                 LockoutEnabled = false,
                 SecurityStamp = "7f434309-a4d9-48e9-9ebb-8803db794577",
-                Id = "00000000-ffff-ffff-ffff-ffffffffffff"
+                Id = "00000000-ffff-ffff-ffff-ffffffffffff",
+                UserTypeId = 1
             };
             var adminPasswordHash = new PasswordHasher<ApplicationUser>();
             adminUser.PasswordHash = adminPasswordHash.HashPassword(adminUser, "Admin8*");
@@ -77,23 +95,7 @@ namespace BackendCapstone.Data
                 }
             );
 
-            modelBuilder.Entity<UserType>().HasData(
-                new UserType()
-                {
-                    Id = 1,
-                    Type = "Admin"
-                },
-                new UserType()
-                {
-                    Id = 2,
-                    Type = "Marketing Rep"
-                },
-                new UserType()
-                {
-                    Id = 3,
-                    Type = "Client"
-                }
-            );
+           
 
             modelBuilder.Entity<ClientPageUser>().HasData(
                 new ClientPageUser()
