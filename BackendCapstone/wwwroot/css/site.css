@@ -67,20 +67,6 @@ body {
 }
 
 
-.clientPage__card {
-    display: flex;
-    height: 300px;
-    width: 420px;
-    border-radius: 2px;
-    flex-direction: column;
-}
-
-img {
-    min-width: 400px;
-    max-width: 400px;
-    min-height: 400px;
-    max-height: 400px;
-}
 
 
 .footer {
