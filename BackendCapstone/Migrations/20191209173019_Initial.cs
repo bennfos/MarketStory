@@ -22,7 +22,7 @@ namespace BackendCapstone.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ClientPage",
+                name: "ClientPages",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -33,7 +33,7 @@ namespace BackendCapstone.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ClientPage", x => x.Id);
+                    table.PrimaryKey("PK_ClientPages", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -100,17 +100,17 @@ namespace BackendCapstone.Migrations
                 {
                     table.PrimaryKey("PK_ClientPageEvents", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ClientPageEvents_ClientPage_ClientPageId",
+                        name: "FK_ClientPageEvents_ClientPages_ClientPageId",
                         column: x => x.ClientPageId,
-                        principalTable: "ClientPage",
+                        principalTable: "ClientPages",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ClientPageEvents_Events_EventId",
                         column: x => x.EventId,
                         principalTable: "Events",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -241,6 +241,34 @@ namespace BackendCapstone.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Chat",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Text = table.Column<string>(nullable: true),
+                    Timestamp = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
+                    UserId = table.Column<string>(nullable: true),
+                    ClientPageId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Chat", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Chat_ClientPages_ClientPageId",
+                        column: x => x.ClientPageId,
+                        principalTable: "ClientPages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Chat_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ClientPageUsers",
                 columns: table => new
                 {
@@ -253,9 +281,9 @@ namespace BackendCapstone.Migrations
                 {
                     table.PrimaryKey("PK_ClientPageUsers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ClientPageUsers_ClientPage_ClientPageId",
+                        name: "FK_ClientPageUsers_ClientPages_ClientPageId",
                         column: x => x.ClientPageId,
-                        principalTable: "ClientPage",
+                        principalTable: "ClientPages",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -276,17 +304,17 @@ namespace BackendCapstone.Migrations
                     IsRead = table.Column<bool>(nullable: false),
                     Timestamp = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
                     UserId = table.Column<string>(nullable: true),
-                    ClientPageId = table.Column<int>(nullable: false)
+                    OtherUserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Messages", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Messages_ClientPage_ClientPageId",
-                        column: x => x.ClientPageId,
-                        principalTable: "ClientPage",
+                        name: "FK_Messages_AspNetUsers_OtherUserId",
+                        column: x => x.OtherUserId,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Messages_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -312,9 +340,9 @@ namespace BackendCapstone.Migrations
                 {
                     table.PrimaryKey("PK_StoryBoards", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_StoryBoards_ClientPage_ClientPageId",
+                        name: "FK_StoryBoards_ClientPages_ClientPageId",
                         column: x => x.ClientPageId,
-                        principalTable: "ClientPage",
+                        principalTable: "ClientPages",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -349,7 +377,7 @@ namespace BackendCapstone.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "ClientPage",
+                table: "ClientPages",
                 columns: new[] { "Id", "Description", "ImgPath", "Name" },
                 values: new object[,]
                 {
@@ -370,7 +398,7 @@ namespace BackendCapstone.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "EventId", "FirstName", "ImgPath", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName", "UserTypeId" },
-                values: new object[] { "00000000-ffff-ffff-ffff-ffffffffffff", 0, "670374be-f924-44ae-a4ce-52bcd25a1d98", "admin@marketing.com", true, null, "Admina", null, "Straytor", false, null, "ADMIN@MARKETING.COM", "ADMIN@MARKETING.COM", "AQAAAAEAACcQAAAAELZEiIAkXKGaqrZe7htB69CWVLlcarDknu8Dis1EbyOJkWtQh7PdVh5ptKrrEfTKOw==", null, false, "7f434309-a4d9-48e9-9ebb-8803db794577", false, "admin@marketing.com", 1 });
+                values: new object[] { "00000000-ffff-ffff-ffff-ffffffffffff", 0, "4414f3d8-cf02-474c-a96a-54704ed2c1e3", "admin@marketing.com", true, null, "Admina", null, "Straytor", false, null, "ADMIN@MARKETING.COM", "ADMIN@MARKETING.COM", "AQAAAAEAACcQAAAAEHT/sQom9sqKHGGHrR9uFlkF/vMEXAyYNWDK0eXdPxS0Ss9nLJpDjzOb4TzEWVrFQA==", null, false, "7f434309-a4d9-48e9-9ebb-8803db794577", false, "admin@marketing.com", 1 });
 
             migrationBuilder.InsertData(
                 table: "ClientPageUsers",
@@ -432,6 +460,16 @@ namespace BackendCapstone.Migrations
                 column: "UserTypeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Chat_ClientPageId",
+                table: "Chat",
+                column: "ClientPageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Chat_UserId",
+                table: "Chat",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ClientPageEvents_ClientPageId",
                 table: "ClientPageEvents",
                 column: "ClientPageId");
@@ -452,9 +490,9 @@ namespace BackendCapstone.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Messages_ClientPageId",
+                name: "IX_Messages_OtherUserId",
                 table: "Messages",
-                column: "ClientPageId");
+                column: "OtherUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Messages_UserId",
@@ -495,6 +533,9 @@ namespace BackendCapstone.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Chat");
+
+            migrationBuilder.DropTable(
                 name: "ClientPageEvents");
 
             migrationBuilder.DropTable(
@@ -513,7 +554,7 @@ namespace BackendCapstone.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "ClientPage");
+                name: "ClientPages");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

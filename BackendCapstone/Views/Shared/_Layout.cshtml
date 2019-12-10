@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@{var user = await UserManager.GetUserAsync(User);}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -19,12 +22,41 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <partial name="_LoginPartial" />
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+                        @if (user != null)
+                        {
+
+                            @if (user.UserTypeId == 1)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="AdminHome">Home</a>
+                                </li>
+                            }
+                            @if (user.UserTypeId == 2)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="RepHome">Home</a>
+                                </li>
+                            }
+                            @if (user.UserTypeId == 3)
+                            {
+                                //need to get client user's client id page
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="ClientPages" asp-action="Details" asp-route-id="">Home</a>
+                                </li>
+                            }
+                            @if (user.UserTypeId == 1 || user.UserTypeId == 2)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="ClientPages" asp-action="Index">Client Pages</a>
+                                </li>
+                            }
+                            @if (user.UserTypeId == 1)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Admin</a>
+                                </li>
+                            }
+                        }
                     </ul>
                 </div>
             </div>
