@@ -1,0 +1,46 @@
+﻿@model BackendCapstone.Models.StoryBoard
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Story</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ImgPath" class="control-label"></label>
+                <input asp-for="ImgPath" class="form-control" />
+                <span asp-validation-for="ImgPath" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Text" class="control-label"></label>
+                <input asp-for="Text" class="form-control" />
+                <span asp-validation-for="Text" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PostDateTime" class="control-label"></label>
+                <input asp-for="PostDateTime" class="form-control" />
+                <span asp-validation-for="PostDateTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                @Html.HiddenFor(sb => sb.ClientPageId)
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-controller="ClientPages" asp-action="Details" asp-route-id=@Model.ClientPageId>Back to Client Page</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

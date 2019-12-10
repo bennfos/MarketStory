@@ -7,16 +7,22 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BackendCapstone.Data;
 using BackendCapstone.Models;
+using System.IO;
+using Microsoft.AspNetCore.Http;
+using BackendCapstone.Models.ClientPageViewModels;
+using Microsoft.AspNetCore.Hosting;
 
 namespace BackendCapstone.Controllers
 {
     public class ClientPagesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ClientPagesController(ApplicationDbContext context)
+        public ClientPagesController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         // GET: ClientPages
@@ -34,6 +40,7 @@ namespace BackendCapstone.Controllers
             }
 
             var clientPage = await _context.ClientPages
+                .Include(m => m.StoryBoards)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (clientPage == null)
             {
@@ -43,10 +50,12 @@ namespace BackendCapstone.Controllers
             return View(clientPage);
         }
 
+       
         // GET: ClientPages/Create
         public IActionResult Create()
         {
-            return View();
+            var viewModel = new ClientPageCreateViewModel();
+            return View(viewModel);
         }
 
         // POST: ClientPages/Create
@@ -54,16 +63,26 @@ namespace BackendCapstone.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,ImgPath")] ClientPage clientPage)
+        public async Task<IActionResult> Create(ClientPageCreateViewModel viewModel)
         {
+            
             if (ModelState.IsValid)
             {
-                _context.Add(clientPage);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (viewModel.Img != null)
+                {
+                    var uniqueFileName = GetUniqueFileName(viewModel.Img.FileName);
+                    var uploads = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
+                    var filePath = Path.Combine(uploads, uniqueFileName);
+                    viewModel.Img.CopyTo(new FileStream(filePath, FileMode.Create));
+                    viewModel.ClientPage.ImgPath = $"~/images/{uniqueFileName}";
+                    _context.Add(viewModel.ClientPage);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
             }
-            return View(clientPage);
+            return View(viewModel);
         }
+            return View(viewModel);
+            }
 
         // GET: ClientPages/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -148,6 +167,15 @@ namespace BackendCapstone.Controllers
         private bool ClientPageExists(int id)
         {
             return _context.ClientPages.Any(e => e.Id == id);
+        }
+
+        private string GetUniqueFileName(string fileName)
+        {
+            fileName = Path.GetFileName(fileName);
+            return Path.GetFileNameWithoutExtension(fileName)
+                      + "_"
+                      + Guid.NewGuid().ToString().Substring(0, 4)
+                      + Path.GetExtension(fileName);
         }
     }
 }
