@@ -4,11 +4,8 @@
     ViewData["Title"] = "AdminHome";
 }
 
-<h1>Home</h1>
+<h1>Admin Dashboard</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <div style="display: flex; flex-direction: row; justify-content: flex-start;">
     <div style="display: flex; flex-direction: column;">
         @foreach (var item in Model.Reps) {
@@ -37,8 +34,8 @@
                     </div>
                 </a>
                 <div style="display: flex; align-content:center; justify-content: center;">
-                    @Html.ActionLink("Edit", "Edit", new { id = item.Id })<p> | </p> 
-                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                    <a asp-route-id=@item.Id asp-controller="ClientPages" asp-action="Edit">Edit</a>&nbsp;|&nbsp;
+                    <a asp-route-id=@item.Id asp-controller="ClientPages" asp-action="Delete">Delete</a>
                 </div>
             </div>
          

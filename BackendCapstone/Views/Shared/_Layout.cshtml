@@ -39,14 +39,15 @@
                             }
                             @if (user.UserTypeId == 3)
                             {
+                                //need to get client user's client id page
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="ClientPages" asp-action="Index">Home</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="ClientPages" asp-action="Details" asp-route-id="">Home</a>
                                 </li>
                             }
                             @if (user.UserTypeId == 1 || user.UserTypeId == 2)
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Client Pages</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="ClientPages" asp-action="Index">Client Pages</a>
                                 </li>
                             }
                             @if (user.UserTypeId == 1)
