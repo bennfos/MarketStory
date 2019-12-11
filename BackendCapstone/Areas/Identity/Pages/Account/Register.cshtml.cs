@@ -18,12 +18,17 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations.Schema;
 using BackendCapstone.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
 
 namespace BackendCapstone.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
+
     public class RegisterModel : PageModel
     {
+        private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ApplicationDbContext _context;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
@@ -36,15 +41,15 @@ namespace BackendCapstone.Areas.Identity.Pages.Account
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
-            
-
+            _webHostEnvironment = webHostEnvironment;
         }
 
         [BindProperty]
@@ -53,10 +58,8 @@ namespace BackendCapstone.Areas.Identity.Pages.Account
         public string ReturnUrl { get; set; }
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
-
   
-        public List<SelectListItem> UserTypeOptions { get; set; }
-       
+        public List<SelectListItem> UserTypeOptions { get; set; }      
 
         public class InputModel
         {
@@ -74,6 +77,8 @@ namespace BackendCapstone.Areas.Identity.Pages.Account
 
             public UserType UserType { get; set; }
 
+            public IFormFile Img { get; set; }
+            public string ImgPath { get; set; }
 
             [Required]
             [EmailAddress]
@@ -96,6 +101,15 @@ namespace BackendCapstone.Areas.Identity.Pages.Account
             return await _context.UserTypes.ToListAsync();
         }
 
+        private string GetUniqueFileName(string fileName)
+        {
+            fileName = Path.GetFileName(fileName);
+            return Path.GetFileNameWithoutExtension(fileName)
+                      + "_"
+                      + Guid.NewGuid().ToString().Substring(0, 4)
+                      + Path.GetExtension(fileName);
+        }
+
         public void OnGet (string returnUrl = null)
         {
             UserTypeOptions = _context.UserTypes.Select(ut => new SelectListItem(ut.Type, ut.Id.ToString())).ToList();
@@ -112,12 +126,32 @@ namespace BackendCapstone.Areas.Identity.Pages.Account
             {
                 var user = new ApplicationUser 
                 { 
+
                     FirstName = Input.FirstName,
                     LastName = Input.LastName,
                     UserTypeId = Input.UserTypeId,
                     UserName = Input.Email, 
                     Email = Input.Email 
                 };
+
+                if (Input.Img != null)
+                {
+                    var uniqueFileName = GetUniqueFileName(Input.Img.FileName);
+                    var imageDirectory = Path.Combine(_webHostEnvironment.WebRootPath, "images");
+                    var filePath = Path.Combine(imageDirectory, uniqueFileName);
+                    using (var myFile = new FileStream(filePath, FileMode.Create))
+                    {
+                        Input.Img.CopyTo(myFile);
+                    }
+                    user.ImgPath = uniqueFileName;
+                }
+                if (Input.Img == null)
+                { 
+                    TempData["imageNotice"] = "You must upload an image for this user";
+                    UserTypeOptions = _context.UserTypes.Select(ut => new SelectListItem(ut.Type, ut.Id.ToString())).ToList();
+                    return Page();
+                };
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
@@ -146,6 +180,7 @@ namespace BackendCapstone.Areas.Identity.Pages.Account
                 }
                 foreach (var error in result.Errors)
                 {
+                    UserTypeOptions = _context.UserTypes.Select(ut => new SelectListItem(ut.Type, ut.Id.ToString())).ToList();
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
