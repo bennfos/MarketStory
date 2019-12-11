@@ -58,11 +58,8 @@ namespace BackendCapstone.Areas.Identity.Pages.Account
         public string ReturnUrl { get; set; }
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
-
-        
   
-        public List<SelectListItem> UserTypeOptions { get; set; }
-       
+        public List<SelectListItem> UserTypeOptions { get; set; }      
 
         public class InputModel
         {
