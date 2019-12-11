@@ -31,10 +31,10 @@
             </div>
         }
     </div>
-   <div style="display: flex; flex-direction: row; justify-self: flex-end;">
+   <div style="display: flex; flex-direction: row; justify-self: flex-end; flex-wrap: wrap;">
         @foreach (var item in Model.ClientPages) {
         
-            <div style="margin: 30px; width:270px; height:287px; background-color:#FAFAFA; border-radius:3px;">
+            <div style="margin: 30px 20px; width:270px; height:287px; background-color:#FAFAFA; border-radius:3px;">
                 <a style="color:#345A6D; " asp-controller="ClientPages" asp-action="Details" asp-route-id="@item.Id">
                     <div>
                         <img style="width:268px; height:250px;" asp-append-version="true" src="~/images/@item.ImgPath"/>
