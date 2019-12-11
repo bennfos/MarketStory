@@ -54,7 +54,7 @@ namespace BackendCapstone.Controllers
         // GET: ClientPages/Create
         public IActionResult Create()
         {
-            var viewModel = new ClientPageCreateViewModel();
+            var viewModel = new ClientPageCreateEditViewModel();
             return View(viewModel);
         }
 
@@ -63,7 +63,7 @@ namespace BackendCapstone.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ClientPageCreateViewModel viewModel)
+        public async Task<IActionResult> Create(ClientPageCreateEditViewModel viewModel)
         {
             
             if (ModelState.IsValid)
@@ -95,11 +95,13 @@ namespace BackendCapstone.Controllers
             }
 
             var clientPage = await _context.ClientPages.FindAsync(id);
-            if (clientPage == null)
+            var viewModel = new ClientPageCreateEditViewModel()
             {
-                return NotFound();
-            }
-            return View(clientPage);
+                ClientPage = clientPage
+            };
+
+            
+            return View(viewModel);
         }
 
         // POST: ClientPages/Edit/5
@@ -107,8 +109,9 @@ namespace BackendCapstone.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,ImgPath")] ClientPage clientPage)
+        public async Task<IActionResult> Edit(int id, ClientPageCreateEditViewModel viewModel)
         {
+            var clientPage = viewModel.ClientPage;
             if (id != clientPage.Id)
             {
                 return NotFound();
@@ -117,9 +120,28 @@ namespace BackendCapstone.Controllers
             if (ModelState.IsValid)
             {
                 try
-                {
+                {                   
+                    var oldFileName = viewModel.ClientPage.ImgPath.Split("/")[2];
+                    if (viewModel.Img != null && viewModel.Img.FileName != oldFileName)
+                    {
+                        var images = Directory.GetFiles("wwwroot/images");
+                        var fileToDelete = images.First(i => i.Contains(oldFileName));
+                        System.GC.Collect();
+                        System.GC.WaitForPendingFinalizers();
+                        System.IO.File.Delete(fileToDelete);
+                        var uniqueFileName = GetUniqueFileName(viewModel.Img.FileName);
+                        var newFile = Path.Combine(_webHostEnvironment.WebRootPath, "images");
+                        var filePath = Path.Combine(newFile, uniqueFileName);
+                        var fsImgPath = $"~{filePath.Split("wwwroot")[1]}";
+                        var imgPath = fsImgPath.Replace("\\", "/");
+                        viewModel.Img.CopyTo(new FileStream(filePath, FileMode.Create));
+                        viewModel.ClientPage.ImgPath = imgPath;
+                        _context.Update(clientPage);
+                        await _context.SaveChangesAsync();
+                    }
                     _context.Update(clientPage);
                     await _context.SaveChangesAsync();
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
