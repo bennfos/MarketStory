@@ -71,10 +71,12 @@ namespace BackendCapstone.Controllers
                 if (viewModel.Img != null)
                 {
                     var uniqueFileName = GetUniqueFileName(viewModel.Img.FileName);
-                    var uploads = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
-                    var filePath = Path.Combine(uploads, uniqueFileName);
+                    var file = Path.Combine(_webHostEnvironment.WebRootPath, "images");
+                    var filePath = Path.Combine(file, uniqueFileName);
+                    var fsImgPath = $"~{filePath.Split("wwwroot")[1]}";
+                    var imgPath = fsImgPath.Replace("\\", "/");
                     viewModel.Img.CopyTo(new FileStream(filePath, FileMode.Create));
-                    viewModel.ClientPage.ImgPath = $"~/images/{uniqueFileName}";
+                    viewModel.ClientPage.ImgPath = imgPath;
                     _context.Add(viewModel.ClientPage);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
