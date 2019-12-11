@@ -1,5 +1,5 @@
-﻿@model IEnumerable<BackendCapstone.Models.ClientPage>
-
+﻿
+@model IEnumerable<BackendCapstone.Models.ClientPage>
 @{
     ViewData["Title"] = "Index";
 }
@@ -16,7 +16,7 @@
         <div style="margin: 30px; width:270px; height:287px; background-color:lightgray; border-radius:3px;">
             <a style="color:#345A6D; " asp-controller="ClientPages" asp-action="Details" asp-route-id="@item.Id">
                 <div>
-                    <img style="width:270px; height:250px;" asp-append-version="true" src=@item.ImgPath />
+                    <img style="width:270px; height:250px;" asp-append-version="true" src="~/images/@item.ImgPath" />
                 </div>
                 <div style="margin: 10px; justify-content: center;">
                     <h5>

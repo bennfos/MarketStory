@@ -1,4 +1,4 @@
-﻿@model BackendCapstone.Models.ClientPage
+﻿@model BackendCapstone.Models.ClientPageViewModels.ClientPageCreateEditViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -10,25 +10,26 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <form enctype="multipart/form-data" asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div> 
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <label asp-for="Img"></label>
+                <input asp-for="Img" type="file">
+                <span asp-validation-for="Img"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
+                <label asp-for="ClientPage.Name" class="control-label"></label>
+                <input asp-for="ClientPage.Name" class="form-control" />
+                <span asp-validation-for="ClientPage.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ImgPath" class="control-label"></label>
-                <input asp-for="ImgPath" class="form-control" />
-                <span asp-validation-for="ImgPath" class="text-danger"></span>
+                <label asp-for="ClientPage.Description" class="control-label"></label>
+                <input asp-for="ClientPage.Description" class="form-control" />
+                <span asp-validation-for="ClientPage.Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" asp-page-handler="Upload" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>

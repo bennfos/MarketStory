@@ -41,8 +41,7 @@ namespace BackendCapstone.Controllers
         }
 
         public async Task<IActionResult> AdminHome()
-        { 
-            
+        {          
                 var admin = await _context.ApplicationUsers
                             .Include(u => u.UserType)
                             .Where(u => u.UserTypeId == 1)
@@ -60,8 +59,6 @@ namespace BackendCapstone.Controllers
                     Admins = admin
                 };
                 return View(viewModel);
-            
-           
         }
 
         public IActionResult Privacy()

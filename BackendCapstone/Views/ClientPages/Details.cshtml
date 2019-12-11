@@ -1,36 +1,52 @@
 ﻿@model BackendCapstone.Models.ClientPage
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@{var user = await UserManager.GetUserAsync(User);}
 
 @{
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1>@Model.Name</h1>
 
-<div>
-    <h4>ClientPage</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImgPath)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImgPath)
-        </dd>
-    </dl>
+@if (user.UserTypeId == 1 || user.UserTypeId == 2)
+{
+    <p>
+        <a asp-controller="StoryBoards" asp-action="Create" asp-route-id=@Model.Id>Create New Story</a>
+    </p>
+}
+
+<div style="display: flex; flex-direction: row; justify-content: flex-start;">
+    <div style="display: flex; flex-direction: row; justify-self: flex-end; flex-wrap:wrap;">
+        @foreach (var item in Model.StoryBoards)
+        {
+            <div style="margin: 30px 22px; width:320px; border:1px solid #AAAAAA; background-color:#FAFAFA; border-radius:5px;">
+                <div style="margin:10px; display:flex; align-items:center; flex-direction:row; height:50px; padding: 16px;">
+                    <img style="margin: 10px; border:double 3px #FF4251; width:35px; height: 35px; border-radius: 50%;" src="~/images/@Model.ImgPath" asp-append-version="true" />
+                    <p><strong>@Model.Name</strong></p>
+                </div>
+                <div>
+                    <img style="width:317px; height:280px;" asp-append-version="true" src="~/images/@item.ImgPath" />
+                </div>
+                <div style="height: auto;">
+                    <p>
+                        <strong>@Model.Name</strong>&nbsp;@item.Text
+                    </p>
+                    <br/>
+                    <p><em>@item.PostDateTime</em></p>
+                </div>
+                <div style="display: flex; align-content:center; justify-content: center;">
+                    <a asp-route-id=@item.Id asp-controller="StoryBoards" asp-action="Edit">Edit</a>&nbsp;|&nbsp;
+                    <a asp-route-id=@item.Id asp-controller="StoryBoards" asp-action="Delete">Delete</a>
+                </div>
+            </div>
+        }
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+@if (user.UserTypeId == 1 || user.UserTypeId == 2)
+{
+    <div>
+        <a asp-action="Index">Back to Client Pages</a>
+    </div>
+}
+
