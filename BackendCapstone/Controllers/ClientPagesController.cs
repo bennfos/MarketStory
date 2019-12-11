@@ -64,27 +64,26 @@ namespace BackendCapstone.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ClientPageCreateEditViewModel viewModel)
-        {
-            
+        {           
             if (ModelState.IsValid)
             {
                 if (viewModel.Img != null)
                 {
                     var uniqueFileName = GetUniqueFileName(viewModel.Img.FileName);
-                    var file = Path.Combine(_webHostEnvironment.WebRootPath, "images");
-                    var filePath = Path.Combine(file, uniqueFileName);
-                    var fsImgPath = $"~{filePath.Split("wwwroot")[1]}";
-                    var imgPath = fsImgPath.Replace("\\", "/");
-                    viewModel.Img.CopyTo(new FileStream(filePath, FileMode.Create));
-                    viewModel.ClientPage.ImgPath = imgPath;
-                    _context.Add(viewModel.ClientPage);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    var imageDirectory = Path.Combine(_webHostEnvironment.WebRootPath, "images");
+                    var filePath = Path.Combine(imageDirectory, uniqueFileName);
+                    using (var myFile = new FileStream(filePath, FileMode.Create))
+                    {
+                        viewModel.Img.CopyTo(myFile);
+                    }                   
+                    viewModel.ClientPage.ImgPath = uniqueFileName;
+                }
+                _context.Add(viewModel.ClientPage);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));         
             }
             return View(viewModel);
         }
-            return View(viewModel);
-            }
 
         // GET: ClientPages/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -120,22 +119,21 @@ namespace BackendCapstone.Controllers
             if (ModelState.IsValid)
             {
                 try
-                {                   
-                    var oldFileName = viewModel.ClientPage.ImgPath.Split("/")[2];
+                {
+                    var oldFileName = viewModel.ClientPage.ImgPath;
                     if (viewModel.Img != null && viewModel.Img.FileName != oldFileName)
                     {
                         var images = Directory.GetFiles("wwwroot/images");
                         var fileToDelete = images.First(i => i.Contains(oldFileName));
-                        System.GC.Collect();
-                        System.GC.WaitForPendingFinalizers();
                         System.IO.File.Delete(fileToDelete);
                         var uniqueFileName = GetUniqueFileName(viewModel.Img.FileName);
-                        var newFile = Path.Combine(_webHostEnvironment.WebRootPath, "images");
-                        var filePath = Path.Combine(newFile, uniqueFileName);
-                        var fsImgPath = $"~{filePath.Split("wwwroot")[1]}";
-                        var imgPath = fsImgPath.Replace("\\", "/");
-                        viewModel.Img.CopyTo(new FileStream(filePath, FileMode.Create));
-                        viewModel.ClientPage.ImgPath = imgPath;
+                        var imageDirectory = Path.Combine(_webHostEnvironment.WebRootPath, "images");
+                        var filePath = Path.Combine(imageDirectory, uniqueFileName);
+                        using (var myFile = new FileStream(filePath, FileMode.Create))
+                        {
+                            viewModel.Img.CopyTo(myFile);
+                        }
+                        viewModel.ClientPage.ImgPath = uniqueFileName;
                         _context.Update(clientPage);
                         await _context.SaveChangesAsync();
                     }

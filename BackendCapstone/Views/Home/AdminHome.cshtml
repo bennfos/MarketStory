@@ -13,7 +13,7 @@
             <div style="margin:10px 10px 10px 10px;">
                 <a asp-controller="Users" asp-action="Details" asp-route-id="@item.Id">
                     <div style="justify-content: center;">
-                        <img style="border:double 6px #345A6D; width:70px; height: 70px; border-radius: 50%;" src=@item.ImgPath asp-append-version="true" />
+                        <img style="border:double 6px #345A6D; width:70px; height: 70px; border-radius: 50%;" src="~/images/@item.ImgPath" asp-append-version="true" />
                         <p>@item.FirstName @item.LastName</p>
                     </div>
                 </a>
@@ -24,7 +24,7 @@
             <div style="margin:10px 10px 10px 10px;">
                 <a asp-controller="Users" asp-action="Details" asp-route-id="@item.Id">
                     <div style="justify-content: center;">
-                        <img style="border:double 6px #FF4251; width:70px; height: 70px; border-radius: 50%;" src=@item.ImgPath asp-append-version="true" />
+                        <img style="border:double 6px #FF4251; width:70px; height: 70px; border-radius: 50%;" src="~/images/@item.ImgPath" asp-append-version="true" />
                         <p>@item.FirstName @item.LastName</p>
                     </div>
                 </a>
@@ -37,7 +37,7 @@
             <div style="margin: 30px; width:270px; height:287px; background-color:#FAFAFA; border-radius:3px;">
                 <a style="color:#345A6D; " asp-controller="ClientPages" asp-action="Details" asp-route-id="@item.Id">
                     <div>
-                        <img style="width:268px; height:250px;" asp-append-version="true" src=@item.ImgPath/>
+                        <img style="width:268px; height:250px;" asp-append-version="true" src="~/images/@item.ImgPath"/>
                     </div>
                     <div class="clientPage__card__name" style="justify-content: center;">
                         <h5>

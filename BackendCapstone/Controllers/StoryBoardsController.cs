@@ -9,6 +9,9 @@ using BackendCapstone.Data;
 using BackendCapstone.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
+using BackendCapstone.Models.StoryBoardViewModels;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
 
 namespace BackendCapstone.Controllers
 {
@@ -16,11 +19,13 @@ namespace BackendCapstone.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public StoryBoardsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public StoryBoardsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
             _userManager = userManager;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
@@ -60,7 +65,12 @@ namespace BackendCapstone.Controllers
                 ClientPageId = id
             };
 
-            return View(storyBoard);
+            var viewModel = new StoryBoardCreateEditViewModel()
+            {
+                StoryBoard = storyBoard
+            };
+
+            return View(viewModel);
         }
 
         // POST: StoryBoards/Create
@@ -68,19 +78,30 @@ namespace BackendCapstone.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Text,ImgPath,Timestamp,PostDateTime,ClientPageId,UserId")] StoryBoard storyBoard)
+        public async Task<IActionResult> Create(StoryBoardCreateEditViewModel viewModel)
         {
             var currentUser = await GetCurrentUserAsync();
+            var storyBoard = viewModel.StoryBoard;
             if (ModelState.IsValid)
             {
+                if (viewModel.Img != null)
+                {
+                    var uniqueFileName = GetUniqueFileName(viewModel.Img.FileName);
+                    var imageDirectory = Path.Combine(_webHostEnvironment.WebRootPath, "images");
+                    var filePath = Path.Combine(imageDirectory, uniqueFileName);
+                    using (var myFile = new FileStream(filePath, FileMode.Create))
+                    {
+                        viewModel.Img.CopyTo(myFile);
+                    }
+                    viewModel.StoryBoard.ImgPath = uniqueFileName;
+                }
                 storyBoard.Timestamp = DateTime.Now;
                 storyBoard.UserId = currentUser.Id;
                 _context.Add(storyBoard);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Details", "ClientPages", new { Id = storyBoard.ClientPageId } );
-            }
-           
-            return View(storyBoard);
+            }          
+            return View(viewModel);
         }
 
         // GET: StoryBoards/Edit/5
@@ -94,12 +115,16 @@ namespace BackendCapstone.Controllers
             var storyBoard = await _context.StoryBoards
                 .Where(sb => sb.Id == id)
                 .FirstOrDefaultAsync();
+            var viewModel = new StoryBoardCreateEditViewModel()
+            {
+                StoryBoard = storyBoard
+            };
             if (storyBoard == null)
             {
                 return NotFound();
             }
             
-            return View(storyBoard);
+            return View(viewModel);
         }
 
         // POST: StoryBoards/Edit/5
@@ -172,6 +197,15 @@ namespace BackendCapstone.Controllers
         private bool StoryBoardExists(int id)
         {
             return _context.StoryBoards.Any(e => e.Id == id);
+        }
+
+        private string GetUniqueFileName(string fileName)
+        {
+            fileName = Path.GetFileName(fileName);
+            return Path.GetFileNameWithoutExtension(fileName)
+                      + "_"
+                      + Guid.NewGuid().ToString().Substring(0, 4)
+                      + Path.GetExtension(fileName);
         }
     }
 }

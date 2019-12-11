@@ -1,4 +1,4 @@
-﻿@model BackendCapstone.Models.StoryBoard
+﻿@model BackendCapstone.Models.StoryBoardViewModels.StoryBoardCreateEditViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -10,35 +10,35 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form enctype="multipart/form-data" asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="ImgPath" class="control-label"></label>
-                <input asp-for="ImgPath" class="form-control" />
-                <span asp-validation-for="ImgPath" class="text-danger"></span>
+                <label asp-for="StoryBoard.Text" class="control-label"></label>
+                <input asp-for="StoryBoard.Text" class="form-control" />
+                <span asp-validation-for="StoryBoard.Text" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Text" class="control-label"></label>
-                <input asp-for="Text" class="form-control" />
-                <span asp-validation-for="Text" class="text-danger"></span>
+                <label asp-for="StoryBoard.PostDateTime" class="control-label"></label>
+                <input asp-for="StoryBoard.PostDateTime" class="form-control" />
+                <span asp-validation-for="StoryBoard.PostDateTime" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PostDateTime" class="control-label"></label>
-                <input asp-for="PostDateTime" class="form-control" />
-                <span asp-validation-for="PostDateTime" class="text-danger"></span>
+                <label asp-for="Img"></label>
+                <input asp-for="Img" type="file">
+                <span asp-validation-for="Img"></span>
             </div>
             <div class="form-group">
-                @Html.HiddenFor(sb => sb.ClientPageId)
+                @Html.HiddenFor(m => m.StoryBoard.ClientPageId)
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" asp-page-handler="Upload" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-controller="ClientPages" asp-action="Details" asp-route-id=@Model.ClientPageId>Back to Client Page</a>
+    <a asp-controller="ClientPages" asp-action="Details" asp-route-id=@Model.StoryBoard.ClientPageId>Back to Client Page</a>
 </div>
 
 @section Scripts {
