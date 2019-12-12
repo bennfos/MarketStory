@@ -5,6 +5,7 @@ using BackendCapstone.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using BackendCapstone.Models.ApplicationUserViewModels;
 
 namespace BackendCapstone.Data
 {

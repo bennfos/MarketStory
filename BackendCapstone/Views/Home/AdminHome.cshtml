@@ -11,7 +11,7 @@
         @foreach (var item in Model.Reps)
         {
             <div style="margin:10px 10px 10px 10px;">
-                <a asp-controller="Users" asp-action="Details" asp-route-id="@item.Id">
+                <a asp-controller="ApplicationUsers" asp-action="MarketingUserDetails" asp-route-id="@item.Id">
                     <div style="justify-content: center;">
                         <img style="border:double 6px #345A6D; width:70px; height: 70px; border-radius: 50%;" src="~/images/@item.ImgPath" asp-append-version="true" />
                         <p>@item.FirstName @item.LastName</p>
@@ -22,7 +22,7 @@
         @foreach (var item in Model.Admins)
         {
             <div style="margin:10px 10px 10px 10px;">
-                <a asp-controller="Users" asp-action="Details" asp-route-id="@item.Id">
+                <a asp-controller="ApplicationUsers" asp-action="MarketingUserDetails" asp-route-id="@item.Id">
                     <div style="justify-content: center;">
                         <img style="border:double 6px #FF4251; width:70px; height: 70px; border-radius: 50%;" src="~/images/@item.ImgPath" asp-append-version="true" />
                         <p>@item.FirstName @item.LastName</p>
@@ -34,7 +34,7 @@
    <div style="display: flex; flex-direction: row; justify-self: flex-end; flex-wrap: wrap;">
         @foreach (var item in Model.ClientPages) {
         
-            <div style="margin: 30px 20px; width:270px; height:287px; background-color:#FAFAFA; border-radius:3px;">
+            <div style="margin: 30px 22px; width:270px; height:287px; background-color:#FAFAFA; border-radius:3px;">
                 <a style="color:#345A6D; " asp-controller="ClientPages" asp-action="Details" asp-route-id="@item.Id">
                     <div>
                         <img style="width:268px; height:250px;" asp-append-version="true" src="~/images/@item.ImgPath"/>
