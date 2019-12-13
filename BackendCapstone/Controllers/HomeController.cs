@@ -42,25 +42,26 @@ namespace BackendCapstone.Controllers
 
         public async Task<IActionResult> AdminHome()
         {          
-                var admin = await _context.ApplicationUsers
-                            .Include(u => u.UserType)
-                            .Where(u => u.UserTypeId == 1)
-                            .ToListAsync();
-                var reps = await _context.ApplicationUsers
-                            .Include(u => u.UserType)
-                            .Where(u => u.UserTypeId == 2)
-                            .ToListAsync();
-                var clientPages = await _context.ClientPages
-                            .ToListAsync();
-                var viewModel = new AdminHomeViewModel()
-                {
-                    ClientPages = clientPages,
-                    Reps = reps,
-                    Admins = admin
-                };
-                return View(viewModel);
+            var admin = await _context.ApplicationUsers
+                        .Include(u => u.UserType)
+                        .Where(u => u.UserTypeId == 1)
+                        .ToListAsync();
+            var reps = await _context.ApplicationUsers
+                        .Include(u => u.UserType)
+                        .Where(u => u.UserTypeId == 2)
+                        .ToListAsync();
+            var clientPages = await _context.ClientPages
+                        .ToListAsync();
+            var viewModel = new AdminHomeViewModel()
+            {
+                ClientPages = clientPages,
+                Reps = reps,
+                Admins = admin
+            };
+            return View(viewModel);
         }
 
+        
         public IActionResult Privacy()
         {
             return View();

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BackendCapstone.Areas.Identity.Pages.Account.Manage
 {
@@ -42,14 +43,22 @@ namespace BackendCapstone.Areas.Identity.Pages.Account.Manage
         [BindProperty]
         public InputModel Input { get; set; }
 
+        public List<SelectListItem> UserTypeOptions { get; set; }
+
+
         public class InputModel
         {
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
 
+            [Required]
+            [Display(Name = "User Type")]
+            public int UserTypeId { get; set; }
+
             public string ImgPath { get; set; }
 
+            [Display(Name = "Profile Picture:")]
             public IFormFile Img { get; set; }
         }
 
@@ -64,6 +73,7 @@ namespace BackendCapstone.Areas.Identity.Pages.Account.Manage
 
             Input = new InputModel
             {
+
                 PhoneNumber = phoneNumber
             };
         }
@@ -75,6 +85,8 @@ namespace BackendCapstone.Areas.Identity.Pages.Account.Manage
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
+
+            UserTypeOptions = _context.UserTypes.Select(ut => new SelectListItem(ut.Type, ut.Id.ToString())).ToList();
 
             await LoadAsync(user);
             return Page();

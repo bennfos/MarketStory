@@ -120,11 +120,11 @@ namespace BackendCapstone.Controllers
             {
                 try
                 {
-                    var oldFileName = viewModel.ClientPage.ImgPath;
-                    if (viewModel.Img != null && viewModel.Img.FileName != oldFileName)
+                    var currentFileName = viewModel.ClientPage.ImgPath;
+                    if (viewModel.Img != null && viewModel.Img.FileName != currentFileName)
                     {
                         var images = Directory.GetFiles("wwwroot/images");
-                        var fileToDelete = images.First(i => i.Contains(oldFileName));
+                        var fileToDelete = images.First(i => i.Contains(currentFileName));
                         System.IO.File.Delete(fileToDelete);
                         var uniqueFileName = GetUniqueFileName(viewModel.Img.FileName);
                         var imageDirectory = Path.Combine(_webHostEnvironment.WebRootPath, "images");
@@ -181,6 +181,13 @@ namespace BackendCapstone.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var clientPage = await _context.ClientPages.FindAsync(id);
+            var currentFileName = clientPage.ImgPath;
+            if (currentFileName != null)
+            {
+                var images = Directory.GetFiles("wwwroot/images");
+                var fileToDelete = images.First(i => i.Contains(currentFileName));
+                System.IO.File.Delete(fileToDelete);
+            }
             _context.ClientPages.Remove(clientPage);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

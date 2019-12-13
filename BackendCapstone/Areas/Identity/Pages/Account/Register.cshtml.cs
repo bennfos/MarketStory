@@ -77,6 +77,7 @@ namespace BackendCapstone.Areas.Identity.Pages.Account
 
             public UserType UserType { get; set; }
 
+            [Display(Name="Profile Picture:")]
             public IFormFile Img { get; set; }
             public string ImgPath { get; set; }
 
