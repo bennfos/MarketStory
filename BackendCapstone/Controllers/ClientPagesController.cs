@@ -182,9 +182,12 @@ namespace BackendCapstone.Controllers
         {
             var clientPage = await _context.ClientPages.FindAsync(id);
             var currentFileName = clientPage.ImgPath;
-            var images = Directory.GetFiles("wwwroot/images");
-            var fileToDelete = images.First(i => i.Contains(currentFileName));
-            System.IO.File.Delete(fileToDelete);
+            if (currentFileName != null)
+            {
+                var images = Directory.GetFiles("wwwroot/images");
+                var fileToDelete = images.First(i => i.Contains(currentFileName));
+                System.IO.File.Delete(fileToDelete);
+            }
             _context.ClientPages.Remove(clientPage);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

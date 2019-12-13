@@ -8,21 +8,34 @@ using BackendCapstone.Models.ApplicationUserViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace BackendCapstone.Controllers
 {
     public class ApplicationUsersController : Controller
     {
+        private readonly IConfiguration _config;
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
-        public ApplicationUsersController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public ApplicationUsersController(IConfiguration config, ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
             _context = context;
+            _config = config;
         }
+
+        public SqlConnection Connection
+        {
+            get
+            {
+                return new SqlConnection(_config.GetConnectionString("DefaultConnection"));
+            }
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -65,11 +78,50 @@ namespace BackendCapstone.Controllers
                 return NotFound();
             }
 
-            var user = await _context.ApplicationUsers.Where(u => u.Id == id).FirstOrDefaultAsync();
-            var userTypeOptions = await _context.UserTypes.Where(ut => ut.Id == 1 || ut.Id == 2).Select(ut => new SelectListItem(ut.Type, ut.Id.ToString())).ToListAsync();
-            var assignedClientPages = await _context.ClientPageUsers.Where(cp => cp.UserId == id).Select(cp => cp.ClientPage).ToListAsync();
-            var clientPageOptions = await _context.ClientPageUsers.Where(cpu => cpu.UserId != id).Select(cpu => new SelectListItem(cpu.ClientPage.Name, cpu.ClientPageId.ToString())).ToListAsync();
-           
+            var user = await _context.ApplicationUsers
+                .Where(u => u.Id == id)
+                .FirstOrDefaultAsync();
+            var userTypeOptions = await _context.UserTypes
+                .Where(ut => ut.Id == 1 || ut.Id == 2)
+                .Select(ut => new SelectListItem(ut.Type, ut.Id.ToString()))
+                .ToListAsync();
+            var assignedClientPages = await _context.ClientPageUsers
+                .Where(cp => cp.UserId == id)
+                .Select(cp => cp.ClientPage)
+                .ToListAsync();
+
+            List<SelectListItem> clientPageOptions = new List<SelectListItem>();
+                using (SqlConnection conn = Connection)
+                    {
+                        conn.Open();
+                        using (SqlCommand cmd = conn.CreateCommand())
+                        {
+                            cmd.CommandText = @"SELECT DISTINCT cp.Id AS ClientPageId, cp.Name
+                                FROM ClientPages cp INNER JOIN ClientPageUsers cpu ON cpu.ClientPageId = cp.Id
+                                WHERE cpu.UserId != @id 
+                                AND cpu.ClientPageId NOT IN
+                                (SELECT cpu.ClientPageId
+                                FROM ClientPageUsers cpu WHERE cpu.UserId = @id);
+                            ";
+                            cmd.Parameters.Add(new SqlParameter("@id", id));
+
+                            SqlDataReader reader = cmd.ExecuteReader();
+
+                    while (reader.Read())
+                    {                      
+                        if (!reader.IsDBNull(reader.GetOrdinal("Name")))
+                        {
+                            var clientPageName = reader.GetString(reader.GetOrdinal("Name"));
+                            var clientPageId = reader.GetInt32(reader.GetOrdinal("ClientPageId"));
+                            SelectListItem selectListItem = new SelectListItem(clientPageName, clientPageId.ToString());
+                            clientPageOptions.Add(selectListItem);
+                        };
+                    }
+
+                    reader.Close();
+                }
+            }
+
             clientPageOptions.Insert(0, new SelectListItem
             {
                 Text = "Choose Client Page to assign....",
@@ -113,7 +165,7 @@ namespace BackendCapstone.Controllers
                     await _context.SaveChangesAsync();
                 
                 }
-                return RedirectToAction(nameof(MarketingUserDetails));
+                return RedirectToAction("MarketingUserDetails", new { Id = viewModel.UserId});
             }
             return View(viewModel);
         }

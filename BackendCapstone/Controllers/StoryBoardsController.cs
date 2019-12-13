@@ -190,9 +190,12 @@ namespace BackendCapstone.Controllers
         {
             var storyBoard = await _context.StoryBoards.FindAsync(id);
             var currentFileName = storyBoard.ImgPath;
-            var images = Directory.GetFiles("wwwroot/images");
-            var fileToDelete = images.First(i => i.Contains(currentFileName));
-            System.IO.File.Delete(fileToDelete);
+            if (currentFileName != null)
+            { 
+                var images = Directory.GetFiles("wwwroot/images");
+                var fileToDelete = images.First(i => i.Contains(currentFileName));          
+                System.IO.File.Delete(fileToDelete);
+            }
             _context.StoryBoards.Remove(storyBoard);
             await _context.SaveChangesAsync();
             return RedirectToAction("Details", "ClientPages", new { Id = storyBoard.ClientPageId });
