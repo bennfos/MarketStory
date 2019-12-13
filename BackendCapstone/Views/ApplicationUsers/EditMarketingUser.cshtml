@@ -1,0 +1,32 @@
+﻿@model BackendCapstone.Models.ApplicationUserViewModels.EditMarketingUserViewModel
+
+@{
+    ViewData["Title"] = "EditMarketingUser";
+}
+
+<h1>@Model.User.FirstName @Model.User.LastName</h1>
+
+<div>
+    <h4>UserType</h4>
+    <hr />
+    <form asp-action="EditMarketingUser" method="post">
+        <div class="form-group">
+            <label asp-for="UserTypeId"></label>
+            <select asp-for="UserTypeId" class="form-control" asp-items="Model.UserTypeOptions"></select>
+        </div>
+        <div class="form-group">
+            <label asp-for="ClientPageUser.ClientPageId"></label>
+            <select asp-for="ClientPageUser.ClientPageId" class="form-control" asp-items="Model.ClientPageOptions"></select>
+        </div>
+        <div class="form-group">
+            @Html.HiddenFor(m => m.UserId)
+        </div>
+        <div class="form-group">
+            @Html.HiddenFor(m => m.User.UserTypeId)
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+</div>
+<div>
+    <a href="javascript:history.go(-1)">Back to Previous Page</a>
+</div>
