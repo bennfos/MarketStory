@@ -55,16 +55,17 @@ namespace BackendCapstone.Controllers
                 .Take(6)
                 .ToListAsync();
 
-            var userClientPages = await _context.ClientPageUsers
+            var clientPageUsers = await _context.ClientPageUsers
                 .Include(cp => cp.ClientPage)
-                .Where(cp => cp.UserId == id)
-                .Select(ucp => ucp.ClientPage).ToListAsync();
+                .Where(cp => cp.UserId == id).ToListAsync();
+
+            
 
             var viewModel = new MarketingUserDetailsViewModel()
             {
                 User = marketingUser,
                 StoryBoards = upcomingStoryBoards,
-                ClientPages = userClientPages
+                ClientPageUsers = clientPageUsers
             };
 
             return View(viewModel);
@@ -89,8 +90,9 @@ namespace BackendCapstone.Controllers
                 .Where(cp => cp.UserId == id)
                 .Select(cp => cp.ClientPage)
                 .ToListAsync();
+           
 
-            List<SelectListItem> clientPageOptions = new List<SelectListItem>();
+            List<SelectListItem> assignClientPageOptions = new List<SelectListItem>();
                 using (SqlConnection conn = Connection)
                     {
                         conn.Open();
@@ -114,15 +116,15 @@ namespace BackendCapstone.Controllers
                             var clientPageName = reader.GetString(reader.GetOrdinal("Name"));
                             var clientPageId = reader.GetInt32(reader.GetOrdinal("ClientPageId"));
                             SelectListItem selectListItem = new SelectListItem(clientPageName, clientPageId.ToString());
-                            clientPageOptions.Add(selectListItem);
+                            assignClientPageOptions.Add(selectListItem);
                         };
                     }
 
                     reader.Close();
                 }
             }
-
-            clientPageOptions.Insert(0, new SelectListItem
+                
+            assignClientPageOptions.Insert(0, new SelectListItem
             {
                 Text = "Choose Client Page to assign....",
                 Value = "0"
@@ -133,11 +135,51 @@ namespace BackendCapstone.Controllers
                 UserTypeId = user.UserTypeId,
                 UserTypeOptions = userTypeOptions,
                 AssignedClientPages = assignedClientPages,
-                ClientPageOptions = clientPageOptions,
+                ClientPageOptions = assignClientPageOptions,
                 UserId = id
                 
             };
             return View(viewModel);
+        }
+
+        // GET: ClientPageUsers/UnassignClientPage/5
+        public async Task<IActionResult> UnassignClientPage(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+
+            var clientPageUser = await _context.ClientPageUsers
+                .Include(cp => cp.ClientPage)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            var assignedUsers = await _context.ClientPageUsers
+                .Include(cpu => cpu.User)
+                .Where(cpu => cpu.ClientPageId == clientPageUser.ClientPageId)
+                .Select(cpu => cpu.User)
+                .ToListAsync();
+
+            clientPageUser.ClientPage.Users = assignedUsers;
+            
+            if (clientPageUser == null)
+            {
+                return NotFound();
+            }
+
+            return View(clientPageUser);
+        }
+
+        // POST: ClientPages/Delete/5
+        [HttpPost, ActionName("UnassignClientPage")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UnassignClientPageConfirmed(int id)
+        {
+            var clientPageUser = await _context.ClientPageUsers.FindAsync(id);                              
+            _context.ClientPageUsers.Remove(clientPageUser);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("MarketingUserDetails", new { Id = clientPageUser.UserId });
         }
 
         [HttpPost]

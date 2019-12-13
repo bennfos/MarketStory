@@ -10,7 +10,7 @@ namespace BackendCapstone.Models.ApplicationUserViewModels
        
         public ApplicationUser User { get; set; }
 
-        public List<ClientPage> ClientPages { get; set; }
+        public List<ClientPageUser> ClientPageUsers { get; set; }
 
         public List<StoryBoard> StoryBoards { get; set; }
 

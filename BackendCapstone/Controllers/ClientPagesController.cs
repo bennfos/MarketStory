@@ -42,6 +42,15 @@ namespace BackendCapstone.Controllers
             var clientPage = await _context.ClientPages
                 .Include(m => m.StoryBoards)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
+            var assignedUsers = await _context.ClientPageUsers
+                .Include(cpu => cpu.User)
+                .Where(cpu => cpu.ClientPageId == id)
+                .Select(cpu => cpu.User)
+                .ToListAsync();
+
+            clientPage.Users = assignedUsers;
+
             if (clientPage == null)
             {
                 return NotFound();
