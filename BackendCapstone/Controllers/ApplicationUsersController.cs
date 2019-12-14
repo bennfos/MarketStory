@@ -55,16 +55,17 @@ namespace BackendCapstone.Controllers
                 .Take(6)
                 .ToListAsync();
 
-            var userClientPages = await _context.ClientPageUsers
+            var clientPageUsers = await _context.ClientPageUsers
                 .Include(cp => cp.ClientPage)
-                .Where(cp => cp.UserId == id)
-                .Select(ucp => ucp.ClientPage).ToListAsync();
+                .Where(cp => cp.UserId == id).ToListAsync();
+
+            
 
             var viewModel = new MarketingUserDetailsViewModel()
             {
                 User = marketingUser,
                 StoryBoards = upcomingStoryBoards,
-                ClientPages = userClientPages
+                ClientPageUsers = clientPageUsers
             };
 
             return View(viewModel);
@@ -89,16 +90,18 @@ namespace BackendCapstone.Controllers
                 .Where(cp => cp.UserId == id)
                 .Select(cp => cp.ClientPage)
                 .ToListAsync();
+           
 
-            List<SelectListItem> clientPageOptions = new List<SelectListItem>();
+            List<SelectListItem> assignClientPageOptions = new List<SelectListItem>();
                 using (SqlConnection conn = Connection)
                     {
                         conn.Open();
                         using (SqlCommand cmd = conn.CreateCommand())
                         {
                             cmd.CommandText = @"SELECT DISTINCT cp.Id AS ClientPageId, cp.Name
-                                FROM ClientPages cp INNER JOIN ClientPageUsers cpu ON cpu.ClientPageId = cp.Id
-                                WHERE cpu.UserId != @id 
+                                FROM ClientPages cp LEFT JOIN ClientPageUsers cpu ON cpu.ClientPageId = cp.Id
+                                WHERE cpu.UserId != @id
+                                OR cpu.Id IS NULL
                                 AND cpu.ClientPageId NOT IN
                                 (SELECT cpu.ClientPageId
                                 FROM ClientPageUsers cpu WHERE cpu.UserId = @id);
@@ -114,15 +117,15 @@ namespace BackendCapstone.Controllers
                             var clientPageName = reader.GetString(reader.GetOrdinal("Name"));
                             var clientPageId = reader.GetInt32(reader.GetOrdinal("ClientPageId"));
                             SelectListItem selectListItem = new SelectListItem(clientPageName, clientPageId.ToString());
-                            clientPageOptions.Add(selectListItem);
+                            assignClientPageOptions.Add(selectListItem);
                         };
                     }
 
                     reader.Close();
                 }
             }
-
-            clientPageOptions.Insert(0, new SelectListItem
+                
+            assignClientPageOptions.Insert(0, new SelectListItem
             {
                 Text = "Choose Client Page to assign....",
                 Value = "0"
@@ -133,7 +136,7 @@ namespace BackendCapstone.Controllers
                 UserTypeId = user.UserTypeId,
                 UserTypeOptions = userTypeOptions,
                 AssignedClientPages = assignedClientPages,
-                ClientPageOptions = clientPageOptions,
+                ClientPageOptions = assignClientPageOptions,
                 UserId = id
                 
             };
@@ -144,7 +147,7 @@ namespace BackendCapstone.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditMarketingUser(EditMarketingUserViewModel viewModel)
         {
-           
+
             var clientPageUser = viewModel.ClientPageUser;
             var userId = viewModel.UserId;
             var userToEdit = await _context.ApplicationUsers.Where(u => u.Id == userId).FirstOrDefaultAsync();
@@ -156,18 +159,60 @@ namespace BackendCapstone.Controllers
                 {
                     clientPageUser.UserId = userId;
                     _context.Update(clientPageUser);
-                    await _context.SaveChangesAsync();                      
+                    await _context.SaveChangesAsync();
                 }
                 if (userToEdit.UserTypeId != viewModel.UserTypeId)
                 {
                     userToEdit.UserTypeId = viewModel.UserTypeId;
                     _context.Update(userToEdit);
                     await _context.SaveChangesAsync();
-                
+
                 }
-                return RedirectToAction("MarketingUserDetails", new { Id = viewModel.UserId});
+                return RedirectToAction("MarketingUserDetails", new { Id = viewModel.UserId });
             }
             return View(viewModel);
         }
+
+        // GET: ClientPageUsers/UnassignClientPage/5
+        public async Task<IActionResult> UnassignClientPage(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+
+            var clientPageUser = await _context.ClientPageUsers
+                .Include(cp => cp.ClientPage)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            var assignedUsers = await _context.ClientPageUsers
+                .Include(cpu => cpu.User)
+                .Where(cpu => cpu.ClientPageId == clientPageUser.ClientPageId)
+                .Select(cpu => cpu.User)
+                .ToListAsync();
+
+            clientPageUser.ClientPage.Users = assignedUsers;
+            
+            if (clientPageUser == null)
+            {
+                return NotFound();
+            }
+
+            return View(clientPageUser);
+        }
+
+        // POST: ClientPages/Delete/5
+        [HttpPost, ActionName("UnassignClientPage")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UnassignClientPageConfirmed(int id)
+        {
+            var clientPageUser = await _context.ClientPageUsers.FindAsync(id);                              
+            _context.ClientPageUsers.Remove(clientPageUser);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("MarketingUserDetails", new { Id = clientPageUser.UserId });
+        }
+
+       
     }
 }

@@ -1,0 +1,50 @@
+﻿@model BackendCapstone.Models.ClientPageUser
+
+@{
+    ViewData["Title"] = "UnassignClientPage";
+}
+
+<h1>Client Page</h1>
+
+<h3>Are you sure you want to unassign this client?</h3>
+<div>
+    <h4>Client Page</h4>
+    <hr />
+    <div style="display: flex; margin: 30px; width:1000px; height:315px; background-color:#FAFAFA; border-radius:3px;">    
+            <div style="margin: 0 15px 0 0;">
+                <img style="width:300px; height:315px;" asp-append-version="true" src="~/images/@Model.ClientPage.ImgPath" />
+            </div>
+            <div style="margin:15px 0 0 0;">
+                
+                <h5>
+                    @Html.DisplayFor(modelItem => Model.ClientPage.Name)
+                </h5>
+                <hr />
+                <p>
+                    @Html.DisplayFor(modelItem => Model.ClientPage.Description)
+                </p>
+                <hr />
+
+                <div style="display:flex; flex-direction:row;">
+                    @foreach (var item in Model.ClientPage.Users)
+                    {
+                        <div style="margin:10px 10px 10px 10px;">
+                            <a asp-controller="ApplicationUsers" asp-action="MarketingUserDetails" asp-route-id="@item.Id">
+                                <div style="display: flex; flex-direction: column; justify-content: center;">
+                                    <img style="width:70px; height: 70px; border-radius: 50%;" src="~/images/@item.ImgPath" asp-append-version="true" />
+                                    <p>@item.FirstName @item.LastName</p>
+                                </div>
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>      
+    </div>
+    <div>
+        <form asp-action="UnassignClientPage">
+            <input type="hidden" asp-for="Id" />
+            <input type="submit" value="Unassign" class="btn btn-danger" /> |
+            <a asp-action="MarketingUserDetails" asp-route-id=@Model.UserId>Back to User Details</a>
+        </form>
+    </div>
+</div>

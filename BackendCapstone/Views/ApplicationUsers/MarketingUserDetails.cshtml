@@ -3,10 +3,18 @@
 @{
     ViewData["Title"] = "MarketingUserDetails";
 }
-    <div style="display: flex; flex-direction: row; align-items:center;">
-        <img style="border:double 6px #345A6D; width:70px; height: 70px; border-radius: 50%;" src="~/images/@Model.User.ImgPath" asp-append-version="true" />
-        <h1>@Model.User.FirstName @Model.User.LastName</h1>
-        <a style="justify-content: flex-end;" asp-route-id=@Model.User.Id asp-controller="ApplicationUsers" asp-action="EditMarketingUser">Edit</a>
+    <div style="width:1100px; display: flex; flex-direction: row;">
+        <div style="width:500px; align-items:flex-start;">
+            <div style="display:flex; border-radius: 5px; flex-direction:row; align-items:center;">
+                <img style="width:70px; height: 70px; border-radius: 50%;" src="~/images/@Model.User.ImgPath" asp-append-version="true" />
+                <h1 style="margin: 0 15px;">@Model.User.FirstName @Model.User.LastName</h1>
+            </div>
+        </div>
+        <div style="width:500px; display:flex; align-self:center; justify-content:flex-end;">
+            <div style="align-items:center; display:flex; justify-content:flex-end;">
+                <a asp-route-id=@Model.User.Id asp-controller="ApplicationUsers" asp-action="EditMarketingUser">Edit</a>
+            </div>
+        </div>
     </div>
 
 <div>
@@ -21,7 +29,7 @@
             </div>
             <p><em>@item.PostDateTime</em></p>
             <div>
-                <img style="width:317px; height:280px;" asp-append-version="true" src="~/images/@item.ImgPath" />
+                <img style="border-radius: 4px 4px 0 0; width:317px; height:280px;" asp-append-version="true" src="~/images/@item.ImgPath" />
             </div>
             <div style="height: auto;">
                 <p>
@@ -30,28 +38,28 @@
                 <br />
 
             </div>
+           
         </div>
         }
     </div>
     <h3>Client Pages</h3>
     <div style="display: flex; flex-direction: row; justify-self: flex-end; flex-wrap: wrap;">
-        @foreach (var item in Model.ClientPages)
+        @foreach (var item in Model.ClientPageUsers)
         {
 
-            <div style="margin: 30px 30px; width:270px; height:287px; background-color:#FAFAFA; border-radius:3px;">
-                <a style="color:#345A6D; " asp-controller="ClientPages" asp-action="Details" asp-route-id="@item.Id">
+            <div style="margin: 30px 30px; width:auto; height:287px; background-color:#FAFAFA; border-radius:3px;">
+                <a style="color:#345A6D; " asp-controller="ClientPages" asp-action="Details" asp-route-id="@item.ClientPage.Id">
                     <div>
-                        <img style="width:268px; height:250px;" asp-append-version="true" src="~/images/@item.ImgPath" />
+                        <img style="border-radius:4px 4px 0 0; width:268px; height:250px;" asp-append-version="true" src="~/images/@item.ClientPage.ImgPath" />
                     </div>
                     <div class="clientPage__card__name" style="justify-content: center;">
                         <h5>
-                            @Html.DisplayFor(modelItem => item.Name)
+                            @Html.DisplayFor(modelItem => item.ClientPage.Name)
                         </h5>
                     </div>
                 </a>
-                <div style="display: flex; align-content:center; justify-content: center;">
-                    
-                    
+                <div style="display: flex; align-content:center; justify-content: center;">                  
+                    <a asp-action="UnassignClientPage" asp-route-id=@item.Id>Unassign</a>                  
                 </div>
             </div>
         }

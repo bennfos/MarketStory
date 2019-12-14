@@ -37,7 +37,17 @@ namespace BackendCapstone.Controllers
             {
                 return RedirectToAction(nameof(AdminHome));
             }
-                return View();
+
+            if (currentUser.UserTypeId == 2)
+            {
+                return RedirectToAction(nameof(RepHome));
+            }
+
+            if (currentUser.UserTypeId == 3)
+            {
+                return RedirectToAction(nameof(ClientHome));
+            }
+            return View();
         }
 
         public async Task<IActionResult> AdminHome()
@@ -61,7 +71,16 @@ namespace BackendCapstone.Controllers
             return View(viewModel);
         }
 
-        
+        public async Task<IActionResult> RepHome()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> ClientHome()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();
