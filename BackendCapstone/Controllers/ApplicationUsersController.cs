@@ -99,8 +99,9 @@ namespace BackendCapstone.Controllers
                         using (SqlCommand cmd = conn.CreateCommand())
                         {
                             cmd.CommandText = @"SELECT DISTINCT cp.Id AS ClientPageId, cp.Name
-                                FROM ClientPages cp INNER JOIN ClientPageUsers cpu ON cpu.ClientPageId = cp.Id
-                                WHERE cpu.UserId != @id 
+                                FROM ClientPages cp LEFT JOIN ClientPageUsers cpu ON cpu.ClientPageId = cp.Id
+                                WHERE cpu.UserId != @id
+                                OR cpu.Id IS NULL
                                 AND cpu.ClientPageId NOT IN
                                 (SELECT cpu.ClientPageId
                                 FROM ClientPageUsers cpu WHERE cpu.UserId = @id);
