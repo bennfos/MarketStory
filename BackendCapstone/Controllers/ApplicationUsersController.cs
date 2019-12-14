@@ -143,6 +143,36 @@ namespace BackendCapstone.Controllers
             return View(viewModel);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditMarketingUser(EditMarketingUserViewModel viewModel)
+        {
+
+            var clientPageUser = viewModel.ClientPageUser;
+            var userId = viewModel.UserId;
+            var userToEdit = await _context.ApplicationUsers.Where(u => u.Id == userId).FirstOrDefaultAsync();
+            ModelState.Remove("User.FirstName");
+            ModelState.Remove("User.LastName");
+            if (ModelState.IsValid)
+            {
+                if (clientPageUser.ClientPageId != 0)
+                {
+                    clientPageUser.UserId = userId;
+                    _context.Update(clientPageUser);
+                    await _context.SaveChangesAsync();
+                }
+                if (userToEdit.UserTypeId != viewModel.UserTypeId)
+                {
+                    userToEdit.UserTypeId = viewModel.UserTypeId;
+                    _context.Update(userToEdit);
+                    await _context.SaveChangesAsync();
+
+                }
+                return RedirectToAction("MarketingUserDetails", new { Id = viewModel.UserId });
+            }
+            return View(viewModel);
+        }
+
         // GET: ClientPageUsers/UnassignClientPage/5
         public async Task<IActionResult> UnassignClientPage(int? id)
         {
@@ -183,34 +213,6 @@ namespace BackendCapstone.Controllers
             return RedirectToAction("MarketingUserDetails", new { Id = clientPageUser.UserId });
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditMarketingUser(EditMarketingUserViewModel viewModel)
-        {
-           
-            var clientPageUser = viewModel.ClientPageUser;
-            var userId = viewModel.UserId;
-            var userToEdit = await _context.ApplicationUsers.Where(u => u.Id == userId).FirstOrDefaultAsync();
-            ModelState.Remove("User.FirstName");
-            ModelState.Remove("User.LastName");
-            if (ModelState.IsValid)
-            {
-                if (clientPageUser.ClientPageId != 0)
-                {
-                    clientPageUser.UserId = userId;
-                    _context.Update(clientPageUser);
-                    await _context.SaveChangesAsync();                      
-                }
-                if (userToEdit.UserTypeId != viewModel.UserTypeId)
-                {
-                    userToEdit.UserTypeId = viewModel.UserTypeId;
-                    _context.Update(userToEdit);
-                    await _context.SaveChangesAsync();
-                
-                }
-                return RedirectToAction("MarketingUserDetails", new { Id = viewModel.UserId});
-            }
-            return View(viewModel);
-        }
+       
     }
 }
