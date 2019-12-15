@@ -11,24 +11,52 @@ using System.IO;
 using Microsoft.AspNetCore.Http;
 using BackendCapstone.Models.ClientPageViewModels;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BackendCapstone.Controllers
 {
+    [Authorize]
     public class ClientPagesController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ClientPagesController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
+        public ClientPagesController(UserManager<ApplicationUser> userManager, ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
         {
+            _userManager = userManager;
             _context = context;
             _webHostEnvironment = webHostEnvironment;
         }
 
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
+
         // GET: ClientPages
         public async Task<IActionResult> Index()
         {
-            return View(await _context.ClientPages.ToListAsync());
+            var currentUser = await GetCurrentUserAsync();
+            
+            //Admin users see all Client Pages
+            if (currentUser.UserTypeId == 1)
+            {
+                var allClientPages = await _context.ClientPages.ToListAsync();
+                return View(allClientPages);
+            }
+
+            //Rep users see a list of their currently assigned Client Pages
+            if (currentUser.UserTypeId == 2)
+            {
+                var assignedClientPages = await _context.ClientPageUsers
+                .Where(cp => cp.UserId == currentUser.Id)
+                .Select(cp => cp.ClientPage)
+                .ToListAsync();
+
+                return View(assignedClientPages);           
+            }
+
+            //So that client users cannot access other Client Pages using URL:
+            return NotFound();
         }
 
         // GET: ClientPages/Details/5
@@ -43,12 +71,18 @@ namespace BackendCapstone.Controllers
                 .Include(m => m.StoryBoards)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
+            var orderedStoryBoards = await _context.StoryBoards
+                .OrderBy(sb => sb.PostDateTime)
+                .Where(sb => sb.ClientPageId == clientPage.Id)
+                .ToListAsync();
+
             var assignedUsers = await _context.ClientPageUsers
                 .Include(cpu => cpu.User)
                 .Where(cpu => cpu.ClientPageId == id)
                 .Select(cpu => cpu.User)
                 .ToListAsync();
 
+            clientPage.StoryBoards = orderedStoryBoards;
             clientPage.Users = assignedUsers;
 
             if (clientPage == null)
@@ -132,9 +166,12 @@ namespace BackendCapstone.Controllers
                     var currentFileName = viewModel.ClientPage.ImgPath;
                     if (viewModel.Img != null && viewModel.Img.FileName != currentFileName)
                     {
-                        var images = Directory.GetFiles("wwwroot/images");
-                        var fileToDelete = images.First(i => i.Contains(currentFileName));
-                        System.IO.File.Delete(fileToDelete);
+                        if (currentFileName != null)
+                        {
+                            var images = Directory.GetFiles("wwwroot/images");
+                            var fileToDelete = images.First(i => i.Contains(currentFileName));
+                            System.IO.File.Delete(fileToDelete);
+                        }
                         var uniqueFileName = GetUniqueFileName(viewModel.Img.FileName);
                         var imageDirectory = Path.Combine(_webHostEnvironment.WebRootPath, "images");
                         var filePath = Path.Combine(imageDirectory, uniqueFileName);
@@ -142,9 +179,7 @@ namespace BackendCapstone.Controllers
                         {
                             viewModel.Img.CopyTo(myFile);
                         }
-                        viewModel.ClientPage.ImgPath = uniqueFileName;
-                        _context.Update(clientPage);
-                        await _context.SaveChangesAsync();
+                        viewModel.ClientPage.ImgPath = uniqueFileName;                       
                     }
                     _context.Update(clientPage);
                     await _context.SaveChangesAsync();
@@ -176,10 +211,20 @@ namespace BackendCapstone.Controllers
 
             var clientPage = await _context.ClientPages
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (clientPage == null)
             {
                 return NotFound();
             }
+
+            var assignedUsers = await _context.ClientPageUsers
+                .Include(cpu => cpu.User)
+                .Where(cpu => cpu.ClientPageId == id)
+                .Select(cpu => cpu.User)
+                .ToListAsync();
+
+            clientPage.Users = assignedUsers;
+
 
             return View(clientPage);
         }

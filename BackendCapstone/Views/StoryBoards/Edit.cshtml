@@ -8,12 +8,24 @@
 
 <h4>StoryBoard</h4>
 <hr />
+<div style="margin: 8px 0; display:flex; flex-direction:row; align-items:center;">
+    <p style="margin: 8px 8px 8px 25px;"> Created by: </p>
+    <img style="width:40px; height: 40px; border-radius: 50%;" src="~/images/@Model.StoryBoard.User.ImgPath" asp-append-version="true" />
+    <p style="margin:8px;"><strong>@Model.StoryBoard.User.FirstName @Model.StoryBoard.User.LastName</strong></p>
+</div>
 <div class="row">
     <div class="col-md-4">
         <form enctype="multipart/form-data" asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="StoryBoard.Id" />
-
+            <div>
+                <img style="width:317px; height:280px;" asp-append-version="true" src="~/images/@Model.StoryBoard.ImgPath" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Img"></label>
+                <input asp-for="Img" type="file">
+                <span asp-validation-for="Img"></span>
+            </div>
             <div class="form-group">
                 <label asp-for="StoryBoard.Text" class="control-label"></label>
                 <input asp-for="StoryBoard.Text" class="form-control" />
@@ -23,11 +35,6 @@
                 <label asp-for="StoryBoard.PostDateTime" class="control-label"></label>
                 <input asp-for="StoryBoard.PostDateTime" class="form-control" />
                 <span asp-validation-for="StoryBoard.PostDateTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Img"></label>
-                <input asp-for="Img" type="file">
-                <span asp-validation-for="Img"></span>
             </div>
             <div class="form-group">
                 @Html.HiddenFor(m => m.StoryBoard.ImgPath)
@@ -46,7 +53,7 @@
 </div>
 
 <div>
-    <a asp-controller="ClientPages" asp-action="Details" asp-route-id=@Model.StoryBoard.ClientPageId>Back to Client Page</a>
+    <a href="javascript:history.go(-1)">Back to Previous Page</a>
 </div>
 
 

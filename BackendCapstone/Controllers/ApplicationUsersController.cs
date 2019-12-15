@@ -98,14 +98,16 @@ namespace BackendCapstone.Controllers
                         conn.Open();
                         using (SqlCommand cmd = conn.CreateCommand())
                         {
-                            cmd.CommandText = @"SELECT DISTINCT cp.Id AS ClientPageId, cp.Name
+                            cmd.CommandText = @"SELECT DISTINCT cp.Id, cp.Name
                                 FROM ClientPages cp LEFT JOIN ClientPageUsers cpu ON cpu.ClientPageId = cp.Id
-                                WHERE cpu.UserId != @id
-                                OR cpu.Id IS NULL
+                                WHERE cpu.Id IS NULL 
+                                OR
+                                cpu.UserId != @id
                                 AND cpu.ClientPageId NOT IN
                                 (SELECT cpu.ClientPageId
                                 FROM ClientPageUsers cpu WHERE cpu.UserId = @id);
                             ";
+                            
                             cmd.Parameters.Add(new SqlParameter("@id", id));
 
                             SqlDataReader reader = cmd.ExecuteReader();
@@ -115,7 +117,7 @@ namespace BackendCapstone.Controllers
                         if (!reader.IsDBNull(reader.GetOrdinal("Name")))
                         {
                             var clientPageName = reader.GetString(reader.GetOrdinal("Name"));
-                            var clientPageId = reader.GetInt32(reader.GetOrdinal("ClientPageId"));
+                            var clientPageId = reader.GetInt32(reader.GetOrdinal("Id"));
                             SelectListItem selectListItem = new SelectListItem(clientPageName, clientPageId.ToString());
                             assignClientPageOptions.Add(selectListItem);
                         };
