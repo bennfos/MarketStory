@@ -1,4 +1,4 @@
-﻿@model BackendCapstone.Models.StoryBoard
+﻿@model BackendCapstone.Models.StoryBoardViewModels.StoryBoardCreateEditViewModel
 
 @{
     ViewData["Title"] = "Delete";
@@ -6,52 +6,34 @@
 
 <h1>Delete</h1>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>StoryBoard</h4>
+<h3>Are you sure you want to delete this Story Board?</h3>
+<div>  
     <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Text)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Text)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImgPath)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImgPath)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Timestamp)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Timestamp)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PostDateTime)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PostDateTime)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ClientPage)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ClientPage.Id)
-        </dd class>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.User)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.User.Id)
-        </dd class>
-    </dl>
+    <div style="margin: 8px 0; display:flex; flex-direction:row; align-items:center;">
+        <p style="margin: 8px 8px 8px 25px;"> Created by: </p>
+        <img style="width:40px; height: 40px; border-radius: 50%;" src="~/images/@Model.StoryBoard.User.ImgPath" asp-append-version="true" />
+        <p style="margin:8px;"><strong>@Model.StoryBoard.User.FirstName @Model.StoryBoard.User.LastName</strong></p>       
+    </div>
+    <div style="margin: 0 22px; width:320px; border:1px solid #E6E6E6; background-color:#FAFAFA; border-radius:5px;">
+        <div style="margin:10px; display:flex; align-items:center; flex-direction:row; height:40px; padding: 16px;">
+            <img style="margin: 10px; border:double 3px #FF4251; width:35px; height: 35px; border-radius: 50%;" src="~/images/@Model.StoryBoard.ClientPage.ImgPath" asp-append-version="true" />
+            <p><strong>@Model.StoryBoard.ClientPage.Name</strong></p>
+        </div>
+        <div>
+            <img style="width:317px; height:280px;" asp-append-version="true" src="~/images/@Model.StoryBoard.ImgPath" />
+        </div>
+        <div style="height: auto;">
+            <p>
+                <strong>@Model.StoryBoard.ClientPage.Name</strong>&nbsp;@Model.StoryBoard.Text
+            </p>
+            <br />
+            <p><em>@Model.StoryBoard.PostDateTime</em></p>
+        </div>      
+    </div>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="StoryBoard.Id" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-controller="ClientPages" asp-action="Details" asp-route-id=@Model.ClientPageId>Back to Client Page</a>
+        <a href="javascript:history.go(-1)">Back to Previous Page</a>
     </form>
 </div>

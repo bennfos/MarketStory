@@ -40,12 +40,12 @@ namespace BackendCapstone.Controllers
 
             if (currentUser.UserTypeId == 2)
             {
-                return RedirectToAction(nameof(RepHome));
+                return RedirectToAction("RepHome", new { Id = currentUser.Id});
             }
 
             if (currentUser.UserTypeId == 3)
             {
-                return RedirectToAction(nameof(ClientHome));
+                return RedirectToAction("ClientHome", new { Id = currentUser.Id});
             }
             return View();
         }
@@ -71,9 +71,29 @@ namespace BackendCapstone.Controllers
             return View(viewModel);
         }
 
-        public async Task<IActionResult> RepHome()
+        public async Task<IActionResult> RepHome(string id)
         {
-            return View();
+            var upcomingStoryBoards = await _context.StoryBoards
+                .OrderBy(sb => sb.PostDateTime)
+                .Include(sb => sb.ClientPage)
+                .Where(sb => sb.UserId == id)
+                .Take(6)
+                .ToListAsync();
+
+            var clientPageUsers = await _context.ClientPageUsers
+                .Include(cp => cp.ClientPage)
+                .Include(cp => cp.User)
+                .Where(cp => cp.UserId == id)
+                .ToListAsync();
+
+            var viewModel = new RepHomeViewModel()
+            {
+                User = await GetCurrentUserAsync(),
+                StoryBoards = upcomingStoryBoards,
+                ClientPageUsers = clientPageUsers            
+            };
+
+            return View(viewModel);
         }
 
         public async Task<IActionResult> ClientHome()

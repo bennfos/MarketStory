@@ -113,6 +113,7 @@ namespace BackendCapstone.Controllers
             }
 
             var storyBoard = await _context.StoryBoards
+                .Include(sb => sb.User)
                 .Where(sb => sb.Id == id)
                 .FirstOrDefaultAsync();
             var viewModel = new StoryBoardCreateEditViewModel()
@@ -132,9 +133,9 @@ namespace BackendCapstone.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Text,ImgPath,Timestamp,PostDateTime,ClientPageId,UserId")] StoryBoard storyBoard)
+        public async Task<IActionResult> Edit(int id, StoryBoardCreateEditViewModel viewModel)
         {
-            if (id != storyBoard.Id)
+            if (id != viewModel.StoryBoard.Id)
             {
                 return NotFound();
             }
@@ -143,12 +144,30 @@ namespace BackendCapstone.Controllers
             {
                 try
                 {
-                    _context.Update(storyBoard);
+                    var currentFileName = viewModel.StoryBoard.ImgPath;
+                    if (viewModel.Img != null && viewModel.Img.FileName != currentFileName)
+                    {
+                        if (currentFileName != null)
+                        {                      
+                            var images = Directory.GetFiles("wwwroot/images");
+                            var fileToDelete = images.First(i => i.Contains(currentFileName));
+                            System.IO.File.Delete(fileToDelete);
+                        }                    
+                        var uniqueFileName = GetUniqueFileName(viewModel.Img.FileName);
+                        var imageDirectory = Path.Combine(_webHostEnvironment.WebRootPath, "images");
+                        var filePath = Path.Combine(imageDirectory, uniqueFileName);
+                        using (var myFile = new FileStream(filePath, FileMode.Create))
+                        {
+                            viewModel.Img.CopyTo(myFile);
+                        }
+                        viewModel.StoryBoard.ImgPath = uniqueFileName;
+                    }
+                    _context.Update(viewModel.StoryBoard);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!StoryBoardExists(storyBoard.Id))
+                    if (!StoryBoardExists(viewModel.StoryBoard.Id))
                     {
                         return NotFound();
                     }
@@ -157,10 +176,10 @@ namespace BackendCapstone.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Details", "ClientPages", new { Id = storyBoard.ClientPageId });
+                return RedirectToAction("Details", "ClientPages", new { Id = viewModel.StoryBoard.ClientPageId });
             }
             
-            return View(storyBoard);
+            return View(viewModel);
         }
 
         // GET: StoryBoards/Delete/5
@@ -175,20 +194,27 @@ namespace BackendCapstone.Controllers
                 .Include(s => s.ClientPage)
                 .Include(s => s.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (storyBoard == null)
+
+            var viewModel = new StoryBoardCreateEditViewModel()
+            {
+                StoryBoard = storyBoard
+            };
+
+            if (viewModel.StoryBoard == null)
             {
                 return NotFound();
             }
 
-            return View(storyBoard);
+            return View(viewModel);
         }
 
         // POST: StoryBoards/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, StoryBoardCreateEditViewModel viewModel)
         {
             var storyBoard = await _context.StoryBoards.FindAsync(id);
+          
             var currentFileName = storyBoard.ImgPath;
             if (currentFileName != null)
             { 
