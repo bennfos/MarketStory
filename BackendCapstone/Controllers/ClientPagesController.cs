@@ -137,9 +137,18 @@ namespace BackendCapstone.Controllers
             }
 
             var clientPage = await _context.ClientPages.FindAsync(id);
+
+            var clientUsers = await _context.ApplicationUsers
+                .Where(u => u.UserTypeId == 3)
+                .ToListAsync();
+
+            var clientUserOptions = clientUsers.Select(u => new SelectListItem(u.FirstName + " " + u.LastName, u.Id)).ToList();
+
             var viewModel = new ClientPageCreateEditViewModel()
             {
-                ClientPage = clientPage
+                ClientPage = clientPage,
+                ClientUsers = clientUsers,
+                ClientUserOptions = clientUserOptions
             };
 
             
@@ -180,6 +189,16 @@ namespace BackendCapstone.Controllers
                             viewModel.Img.CopyTo(myFile);
                         }
                         viewModel.ClientPage.ImgPath = uniqueFileName;                       
+                    }
+                    if (viewModel.ClientUserId != null)
+                    {
+                        var clientPageUser = new ClientPageUser()
+                        {
+                            UserId = viewModel.ClientUserId,
+                            ClientPageId = viewModel.ClientPage.Id
+                        };
+                        _context.Add(clientPageUser);
+                        await _context.SaveChangesAsync();
                     }
                     _context.Update(clientPage);
                     await _context.SaveChangesAsync();

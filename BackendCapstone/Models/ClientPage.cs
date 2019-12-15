@@ -20,6 +20,8 @@ namespace BackendCapstone.Models
       
         [NotMapped]
         public List<ApplicationUser> Users { get; set; }
+        [NotMapped]
+        public List<ApplicationUser> ClientUsers { get; set; }
        
         public List<StoryBoard> StoryBoards { get; set; }
 
