@@ -161,7 +161,7 @@ namespace BackendCapstone.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, ClientPageCreateEditViewModel viewModel)
-        {
+         {
             var clientPage = viewModel.ClientPage;
             if (id != clientPage.Id)
             {

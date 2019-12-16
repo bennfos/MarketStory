@@ -96,9 +96,26 @@ namespace BackendCapstone.Controllers
             return View(viewModel);
         }
 
-        public async Task<IActionResult> ClientHome()
+        public async Task<IActionResult> ClientHome(string id)
         {
-            return View();
+            
+            var clientPage = await _context.ClientPageUsers
+                .Where(cpu => cpu.UserId == id)
+                .Select(cpu => cpu.ClientPage)
+                .FirstOrDefaultAsync();     
+            var users = await _context.ClientPageUsers
+                .Include(cpu => cpu.User)
+                .Where(cpu => cpu.ClientPageId == clientPage.Id)
+                .Select(cpu => cpu.User)
+                .ToListAsync();
+            var orderedStoryBoards = await _context.StoryBoards
+                .OrderBy(sb => sb.PostDateTime)
+                .Where(sb => sb.ClientPageId == clientPage.Id)
+                .ToListAsync();
+
+            clientPage.Users = users;
+            clientPage.StoryBoards = orderedStoryBoards;
+            return View(clientPage);
         }
 
         public IActionResult Privacy()

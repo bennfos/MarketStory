@@ -30,6 +30,7 @@ namespace BackendCapstone.Controllers
 
         public SqlConnection Connection
         {
+            
             get
             {
                 return new SqlConnection(_config.GetConnectionString("DefaultConnection"));
@@ -39,6 +40,20 @@ namespace BackendCapstone.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+
+        public async Task<IActionResult> Details(string id)
+        {
+            var user = await _context.ApplicationUsers
+                .Where(u => u.Id == id)
+                .FirstOrDefaultAsync();
+
+            if (user.UserTypeId == 1 || user.UserTypeId == 2)
+            {            
+                return RedirectToAction("MarketingUserDetails", new { Id = user.Id });
+            }
+
+            return RedirectToAction("ClientUserDetails", new { Id = user.Id });
         }
 
         public async Task<IActionResult> MarketingUserDetails([FromRoute] string id)
@@ -57,9 +72,7 @@ namespace BackendCapstone.Controllers
 
             var clientPageUsers = await _context.ClientPageUsers
                 .Include(cp => cp.ClientPage)
-                .Where(cp => cp.UserId == id).ToListAsync();
-
-            
+                .Where(cp => cp.UserId == id).ToListAsync();          
 
             var viewModel = new MarketingUserDetailsViewModel()
             {
@@ -70,6 +83,24 @@ namespace BackendCapstone.Controllers
 
             return View(viewModel);
         }
+
+        public async Task<IActionResult> ClientUserDetails([FromRoute] string id)
+        {
+            var clientUser = await _context.ApplicationUsers
+                .Include(u => u.UserType)
+                .Where(u => u.Id == id)
+                .FirstOrDefaultAsync();
+
+            var clientPageUsers = await _context.ClientPageUsers
+                .Include(cp => cp.ClientPage)
+                .Where(cp => cp.UserId == id)
+                .ToListAsync();       
+
+            return View(clientUser);
+        }
+
+
+
 
         public async Task<IActionResult> EditMarketingUser(string id)
         {

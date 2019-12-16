@@ -15,7 +15,7 @@
         {
             <div style="margin:10px 10px 10px 10px;">
                 <a asp-controller="ApplicationUsers" asp-action="Details" asp-route-id="@item.Id">
-                    <div style="display: flex; flex-direction: column; justify-content: center;">
+                    <div style="display: flex; flex-direction: column; align-items: center;">
                         <img style="width:70px; height: 70px; border-radius: 50%;" src="~/images/@item.ImgPath" asp-append-version="true" />
                         <p>@item.FirstName @item.LastName</p>
                     </div>
@@ -24,13 +24,6 @@
         }
     </div>
 </div>
-
-@if (user.UserTypeId == 1 || user.UserTypeId == 2)
-{
-    <p>
-        <a asp-controller="StoryBoards" asp-action="Create" asp-route-id=@Model.Id>Create New Story</a>
-    </p>
-}
 
 <div style="display: flex; flex-direction: row; justify-content: flex-start;">
     <div style="display: flex; flex-direction: row; justify-self: flex-end; flex-wrap:wrap;">
@@ -50,21 +43,8 @@
                     </p>
                     <br />
                     <p><em>@item.PostDateTime</em></p>
-                </div>
-                @if (user.UserTypeId == 1 || user.UserTypeId == 2)
-                {
-                    <div style="display: flex; align-content:center; justify-content: center;">
-                        <a asp-route-id=@item.Id asp-controller="StoryBoards" asp-action="Edit">Edit</a>&nbsp;|&nbsp;
-                        <a asp-route-id=@item.Id asp-controller="StoryBoards" asp-action="Delete">Delete</a>
-                    </div>
-                }
+                </div>               
             </div>
         }
     </div>
 </div>
-@if (user.UserTypeId == 1 || user.UserTypeId == 2)
-{
-    <div>
-        <a asp-action="Index">Back to Client Pages</a>
-    </div>
-}
