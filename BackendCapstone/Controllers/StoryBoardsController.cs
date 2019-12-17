@@ -62,6 +62,7 @@ namespace BackendCapstone.Controllers
         {
             var storyBoard = new StoryBoard()
             {
+                PostDateTime = DateTime.Now,
                 ClientPageId = id
             };
 

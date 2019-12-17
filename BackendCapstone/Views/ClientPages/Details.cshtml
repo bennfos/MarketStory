@@ -34,31 +34,53 @@
 
 <div style="display: flex; flex-direction: row; justify-content: flex-start;">
     <div style="display: flex; flex-direction: row; justify-self: flex-end; flex-wrap:wrap;">
-        @foreach (var item in Model.StoryBoards)
+        @for (int i = 0; i < Model.StoryBoards.Count; i++)
         {
-            <div style="margin: 30px 22px; width:320px; border:1px solid #E6E6E6; background-color:#FAFAFA; border-radius:5px;">
+            
+        <div style="display: flex; flex-direction: row; margin: 30px 22px; width:1000px; border:1px solid #E6E6E6; background-color:#FDFDFD; border-radius:5px;">
+            <p><em>Post Date: @Model.StoryBoards[i].PostDateTime</em></p>
+            <div style="margin: 30px 22px; width:320px; border:1px solid #E6E6E6; background-color:#FDFDFD; border-radius:5px;">
                 <div style="margin:10px; display:flex; align-items:center; flex-direction:row; height:40px; padding: 16px;">
                     <img style="margin: 10px; border:double 3px #FF4251; width:35px; height: 35px; border-radius: 50%;" src="~/images/@Model.ImgPath" asp-append-version="true" />
                     <p><strong>@Model.Name</strong></p>
                 </div>
                 <div>
-                    <img style="width:317px; height:280px;" asp-append-version="true" src="~/images/@item.ImgPath" />
+                    <img style="width:317px; height:280px;" asp-append-version="true" src="~/images/@Model.StoryBoards[i].ImgPath" />
                 </div>
                 <div style="height: auto;">
                     <p>
-                        <strong>@Model.Name</strong>&nbsp;@item.Text
+                        <strong>@Model.Name</strong>&nbsp;@Model.StoryBoards[i].Text
                     </p>
-                    <br />
-                    <p><em>@item.PostDateTime</em></p>
                 </div>
                 @if (user.UserTypeId == 1 || user.UserTypeId == 2)
                 {
                     <div style="display: flex; align-content:center; justify-content: center;">
-                        <a asp-route-id=@item.Id asp-controller="StoryBoards" asp-action="Edit">Edit</a>&nbsp;|&nbsp;
-                        <a asp-route-id=@item.Id asp-controller="StoryBoards" asp-action="Delete">Delete</a>
+                        <a asp-route-id=@Model.StoryBoards[i].Id asp-controller="StoryBoards" asp-action="Edit">Edit</a>&nbsp;|&nbsp;
+                        <a asp-route-id=@Model.StoryBoards[i].Id asp-controller="StoryBoards" asp-action="Delete">Delete</a>
                     </div>
                 }
             </div>
+            <div style="display:flex;">
+                <div style="display: flex; justify-content: flex-end;flex-direction: column; margin: 20px;">
+                    @foreach (var item in Model.StoryBoards[i].Chats)
+                    {
+                        <div style="margin:10px; display:flex; align-items:center; flex-direction:row;">
+                            <p style="margin: 5px;"><strong>@item.User.FirstName @item.User.LastName</strong></p>
+                            <p style="margin: 5px;">@item.Text</p>
+                        </div>
+                    }
+                    <form asp-action="PostChat">
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="StoryBoards[i].Id" />
+                        <div class="form-group" style="display:flex;">
+                            <input asp-for="StoryBoards[i].Chat.Text" style="width: 298px;" placeholder="Add a comment..." />
+                            <input type="submit" value="Post" class="btn" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+          
         }
     </div>
 </div>

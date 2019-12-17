@@ -67,14 +67,18 @@ namespace BackendCapstone.Controllers
                 return NotFound();
             }
 
+
             var clientPage = await _context.ClientPages
                 .Include(m => m.StoryBoards)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             var orderedStoryBoards = await _context.StoryBoards
+                .Include(sb => sb.Chats)
                 .OrderBy(sb => sb.PostDateTime)
                 .Where(sb => sb.ClientPageId == clientPage.Id)
                 .ToListAsync();
+
+            
 
             var assignedUsers = await _context.ClientPageUsers
                 .Include(cpu => cpu.User)
@@ -126,6 +130,28 @@ namespace BackendCapstone.Controllers
                 return RedirectToAction(nameof(Index));         
             }
             return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PostChat(ClientPage clientPage)
+        {
+            var currentUser = await GetCurrentUserAsync();
+            var chat = new Chat()          
+            {
+                Text = clientPage.StoryBoards[0].Chat.Text,
+                StoryBoardId = clientPage.StoryBoards[0].Id,
+                UserId = currentUser.Id,
+                Timestamp = DateTime.Now,
+            };
+
+            if (ModelState.IsValid)
+            {
+                _context.Add(chat);
+                await _context.SaveChangesAsync();              
+            }           
+            
+            return RedirectToAction("Details", new { Id = clientPage.Id });
         }
 
         // GET: ClientPages/Edit/5
@@ -219,6 +245,7 @@ namespace BackendCapstone.Controllers
             }
             return View(clientPage);
         }
+
 
         // GET: ClientPages/Delete/5
         public async Task<IActionResult> Delete(int? id)

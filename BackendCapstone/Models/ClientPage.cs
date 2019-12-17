@@ -22,7 +22,10 @@ namespace BackendCapstone.Models
         public List<ApplicationUser> Users { get; set; }
         [NotMapped]
         public List<ApplicationUser> ClientUsers { get; set; }
-       
+
+       [NotMapped]
+        public StoryBoard StoryBoard { get; set; }
+
         public List<StoryBoard> StoryBoards { get; set; }
 
     }

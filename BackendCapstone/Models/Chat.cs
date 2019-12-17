@@ -17,8 +17,8 @@ namespace BackendCapstone.Models
 
         public ApplicationUser User { get; set; }
 
-        public int ClientPageId { get; set; }
+        public int StoryBoardId { get; set; }
 
-        public ClientPage ClientPage { get; set; }
+        public StoryBoard StoryBoard { get; set; }
     }
 }
