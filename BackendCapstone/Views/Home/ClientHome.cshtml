@@ -33,6 +33,8 @@
                 <div style="margin:10px; display:flex; align-items:center; flex-direction:row; height:40px; padding: 16px;">
                     <img style="margin: 10px; border:double 3px #FF4251; width:35px; height: 35px; border-radius: 50%;" src="~/images/@Model.ImgPath" asp-append-version="true" />
                     <p><strong>@Model.Name</strong></p>
+                    <br />
+                    <p style="font-size:x-small"><em>Post Date: @item.PostDateTime</em></p>
                 </div>
                 <div>
                     <img style="width:317px; height:280px;" asp-append-version="true" src="~/images/@item.ImgPath" />
@@ -41,8 +43,8 @@
                     <p>
                         <strong>@Model.Name</strong>&nbsp;@item.Text
                     </p>
-                    <br />
-                    <p><em>@item.PostDateTime</em></p>
+                    
+                    
                 </div>               
             </div>
         }

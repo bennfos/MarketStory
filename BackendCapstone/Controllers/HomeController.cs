@@ -45,7 +45,11 @@ namespace BackendCapstone.Controllers
 
             if (currentUser.UserTypeId == 3)
             {
-                return RedirectToAction("ClientHome", new { Id = currentUser.Id});
+                var clientPageUser = await _context.ClientPageUsers                
+                    .Where(cpu => cpu.UserId == currentUser.Id)                   
+                    .FirstOrDefaultAsync();
+
+                return RedirectToAction("Details", "ClientPages", new { Id = clientPageUser.ClientPageId});
             }
             return View();
         }

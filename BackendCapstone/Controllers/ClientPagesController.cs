@@ -77,7 +77,6 @@ namespace BackendCapstone.Controllers
                 .OrderBy(sb => sb.PostDateTime)
                 .Where(sb => sb.ClientPageId == clientPage.Id)
                 .ToListAsync();
-
             
 
             var assignedUsers = await _context.ClientPageUsers
@@ -89,15 +88,42 @@ namespace BackendCapstone.Controllers
             clientPage.StoryBoards = orderedStoryBoards;
             clientPage.Users = assignedUsers;
 
+            var viewModel = new ClientPageDetailsViewModel()
+            {
+                ClientPage = clientPage,             
+            };
+
             if (clientPage == null)
             {
                 return NotFound();
             }
 
-            return View(clientPage);
+            return View(viewModel);
         }
 
-       
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PostChat(ClientPageDetailsViewModel viewModel)
+        {
+            var currentUser = await GetCurrentUserAsync();
+
+            var chat = new Chat()
+            {
+                Text = viewModel.ChatText,
+                StoryBoardId = viewModel.StoryBoardId,
+                UserId = currentUser.Id,
+                Timestamp = DateTime.Now,
+            };
+           
+            if (ModelState.IsValid)
+            {
+                _context.Add(chat);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction("Details", new { Id = viewModel.ClientPage.Id });
+        }
+
         // GET: ClientPages/Create
         public IActionResult Create()
         {
@@ -130,29 +156,9 @@ namespace BackendCapstone.Controllers
                 return RedirectToAction(nameof(Index));         
             }
             return View(viewModel);
-        }
+        }     
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> PostChat(ClientPage clientPage)
-        {
-            var currentUser = await GetCurrentUserAsync();
-            var chat = new Chat()          
-            {
-                Text = clientPage.StoryBoards[0].Chat.Text,
-                StoryBoardId = clientPage.StoryBoards[0].Id,
-                UserId = currentUser.Id,
-                Timestamp = DateTime.Now,
-            };
-
-            if (ModelState.IsValid)
-            {
-                _context.Add(chat);
-                await _context.SaveChangesAsync();              
-            }           
-            
-            return RedirectToAction("Details", new { Id = clientPage.Id });
-        }
+       
 
         // GET: ClientPages/Edit/5
         public async Task<IActionResult> Edit(int? id)
