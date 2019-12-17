@@ -24,24 +24,17 @@
                     <ul class="navbar-nav flex-grow-1">
                         @if (user != null)
                         {
-
-                           
+                         
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                                 </li>
-                           
-                            @if (user.UserTypeId == 1 || user.UserTypeId == 2)
+                                
+                            @if (user.UserTypeId != 3)
                             {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="ClientPages" asp-action="Index">Client Pages</a>
                                 </li>
-                            }
-                            @if (user.UserTypeId == 1)
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Admin</a>
-                                </li>
-                            }
+                            }                          
                         }
                     </ul>
                 </div>
