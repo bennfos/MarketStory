@@ -59,9 +59,12 @@
                         </h5>
                     </div>
                 </a>
+                @if (Model.User.UserTypeId == 1)
+                {
                 <div style="display: flex; align-content:center; justify-content: center;">                  
                     <a asp-action="UnassignClientPage" asp-route-id=@item.Id>Unassign</a>                  
                 </div>
+                }
             </div>
         }
     </div>

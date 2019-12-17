@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,6 +13,7 @@ namespace BackendCapstone.Models.ApplicationUserViewModels
         
         public ApplicationUser User { get; set; }
 
+        [Display(Name="User Type")]
         public int UserTypeId { get; set; }
 
         public List<SelectListItem> UserTypeOptions { get; set; }
@@ -20,6 +22,7 @@ namespace BackendCapstone.Models.ApplicationUserViewModels
 
         public List<SelectListItem> ClientPageOptions { get; set; }
 
+        [Display(Name = "Assign Client Page")]
         public ClientPageUser ClientPageUser { get; set; }
     }
 }
