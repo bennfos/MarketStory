@@ -95,8 +95,8 @@
                         <input type="hidden" asp-for="ClientPage.Id" />
                         <input type="hidden" value="@Model.ClientPage.StoryBoards[i].Id" asp-for="@Model.StoryBoardId" />
                         <div class="form-group" style="display:flex; position: absolute; bottom: 15px;">
-                            <input asp-for="ChatText" style="border-radius: 5px; width: 525px;" placeholder="Add a comment..." />
-                            <input type="submit" value="Post" class="btn" />
+                            <input id="messageInput" asp-for="ChatText" style="border-radius: 5px; width: 525px;" placeholder="Add a comment..." />
+                            <input id="postButton" type="button" value="Post" class="btn" />
                         </div>
                     </form>
                 </div>
