@@ -1,0 +1,39 @@
+﻿@model BackendCapstone.Models.ApplicationUser
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+
+
+<div>
+    
+    <div style="display:flex; border-radius: 5px; flex-direction:row; align-items:center;">
+        <img style="width:70px; height: 70px; border-radius: 50%;" src="~/images/@Model.ImgPath" asp-append-version="true" />
+        <h1 style="margin: 0 15px;">@Model.FirstName @Model.LastName</h1>
+    </div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.LastName)
+        </dd>      
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.PhoneNumber)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PhoneNumber)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a href="javascript:history.go(-1)">Back to Previous Page</a>
+</div>

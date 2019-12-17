@@ -1,0 +1,52 @@
+﻿@model BackendCapstone.Models.ClientPage
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@{var user = await UserManager.GetUserAsync(User);}
+
+@{
+    ViewData["Title"] = "Details";
+}
+<div style="display:flex; flex-direction:row;">
+    <div style="width:50%; align-self:center;">
+        <h1>@Model.Name</h1>
+    </div>
+    <div style="width:50%; display:flex; flex-direction:row; justify-content:flex-end;">
+        @foreach (var item in Model.Users)
+        {
+            <div style="margin:10px 10px 10px 10px;">
+                <a asp-controller="ApplicationUsers" asp-action="Details" asp-route-id="@item.Id">
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <img style="width:70px; height: 70px; border-radius: 50%;" src="~/images/@item.ImgPath" asp-append-version="true" />
+                        <p>@item.FirstName @item.LastName</p>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+<div style="display: flex; flex-direction: row; justify-content: flex-start;">
+    <div style="display: flex; flex-direction: row; justify-self: flex-end; flex-wrap:wrap;">
+        @foreach (var item in Model.StoryBoards)
+        {
+            <div style="margin: 30px 22px; width:320px; border:1px solid #E6E6E6; background-color:#FAFAFA; border-radius:5px;">
+                <div style="margin:10px; display:flex; align-items:center; flex-direction:row; height:40px; padding: 16px;">
+                    <img style="margin: 10px; border:double 3px #FF4251; width:35px; height: 35px; border-radius: 50%;" src="~/images/@Model.ImgPath" asp-append-version="true" />
+                    <p><strong>@Model.Name</strong></p>
+                    <br />
+                    <p style="font-size:x-small"><em>Post Date: @item.PostDateTime</em></p>
+                </div>
+                <div>
+                    <img style="width:317px; height:280px;" asp-append-version="true" src="~/images/@item.ImgPath" />
+                </div>
+                <div style="height: auto;">
+                    <p>
+                        <strong>@Model.Name</strong>&nbsp;@item.Text
+                    </p>
+                    
+                    
+                </div>               
+            </div>
+        }
+    </div>
+</div>

@@ -67,14 +67,17 @@ namespace BackendCapstone.Controllers
                 return NotFound();
             }
 
+
             var clientPage = await _context.ClientPages
                 .Include(m => m.StoryBoards)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             var orderedStoryBoards = await _context.StoryBoards
+                .Include(sb => sb.Chats)
                 .OrderBy(sb => sb.PostDateTime)
                 .Where(sb => sb.ClientPageId == clientPage.Id)
                 .ToListAsync();
+            
 
             var assignedUsers = await _context.ClientPageUsers
                 .Include(cpu => cpu.User)
@@ -85,15 +88,42 @@ namespace BackendCapstone.Controllers
             clientPage.StoryBoards = orderedStoryBoards;
             clientPage.Users = assignedUsers;
 
+            var viewModel = new ClientPageDetailsViewModel()
+            {
+                ClientPage = clientPage,             
+            };
+
             if (clientPage == null)
             {
                 return NotFound();
             }
 
-            return View(clientPage);
+            return View(viewModel);
         }
 
-       
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PostChat(ClientPageDetailsViewModel viewModel)
+        {
+            var currentUser = await GetCurrentUserAsync();
+
+            var chat = new Chat()
+            {
+                Text = viewModel.ChatText,
+                StoryBoardId = viewModel.StoryBoardId,
+                UserId = currentUser.Id,
+                Timestamp = DateTime.Now,
+            };
+           
+            if (ModelState.IsValid)
+            {
+                _context.Add(chat);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction("Details", new { Id = viewModel.ClientPage.Id });
+        }
+
         // GET: ClientPages/Create
         public IActionResult Create()
         {
@@ -126,7 +156,9 @@ namespace BackendCapstone.Controllers
                 return RedirectToAction(nameof(Index));         
             }
             return View(viewModel);
-        }
+        }     
+
+       
 
         // GET: ClientPages/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -137,9 +169,18 @@ namespace BackendCapstone.Controllers
             }
 
             var clientPage = await _context.ClientPages.FindAsync(id);
+
+            var clientUsers = await _context.ApplicationUsers
+                .Where(u => u.UserTypeId == 3)
+                .ToListAsync();
+
+            var clientUserOptions = clientUsers.Select(u => new SelectListItem(u.FirstName + " " + u.LastName, u.Id)).ToList();
+
             var viewModel = new ClientPageCreateEditViewModel()
             {
-                ClientPage = clientPage
+                ClientPage = clientPage,
+                ClientUsers = clientUsers,
+                ClientUserOptions = clientUserOptions
             };
 
             
@@ -152,7 +193,7 @@ namespace BackendCapstone.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, ClientPageCreateEditViewModel viewModel)
-        {
+         {
             var clientPage = viewModel.ClientPage;
             if (id != clientPage.Id)
             {
@@ -181,6 +222,16 @@ namespace BackendCapstone.Controllers
                         }
                         viewModel.ClientPage.ImgPath = uniqueFileName;                       
                     }
+                    if (viewModel.ClientUserId != null)
+                    {
+                        var clientPageUser = new ClientPageUser()
+                        {
+                            UserId = viewModel.ClientUserId,
+                            ClientPageId = viewModel.ClientPage.Id
+                        };
+                        _context.Add(clientPageUser);
+                        await _context.SaveChangesAsync();
+                    }
                     _context.Update(clientPage);
                     await _context.SaveChangesAsync();
 
@@ -200,6 +251,7 @@ namespace BackendCapstone.Controllers
             }
             return View(clientPage);
         }
+
 
         // GET: ClientPages/Delete/5
         public async Task<IActionResult> Delete(int? id)
