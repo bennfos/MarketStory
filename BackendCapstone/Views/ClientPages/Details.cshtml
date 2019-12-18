@@ -75,27 +75,24 @@
 
             <div style="display:flex; width:680px; height:550px">
                 <div style="position: relative; display: flex; flex-direction: column; width:615px; overflow-y:auto">
-                    <div id="chats[@i]" style="top:0; display:flex; flex-direction:column;margin: 20px 10px 70px 10px; overflow-y:auto;">
-                        <div id="messagesList[@i]" style="list-style-type:none;">
+                    <div id="messagesList[@Model.ClientPage.StoryBoards[i].Id]" style="top:0; display:flex; flex-direction:column;margin: 20px 10px 70px 10px; overflow-y:auto;">                      
                         @foreach (var item in Model.ClientPage.StoryBoards[i].Chats)
                         {
 
                             if (item.UserId == user.Id)
                             {
 
-                                <div style="color:#FFFFFF; background-color: #1D9EF1; border-radius: 8px; margin :10px; display:flex; align-self:flex-end; flex-direction:row;">
-                                    <p style="min-width:15px; max-width:300px; margin: 5px;">@item.Text</p>
+                                <div style="color:#FFFFFF; background-color: #1D9EF1; border-radius: 8px; margin :10px; display:flex; align-self:flex-end; flex-direction:row; min-width:15px; max-width:300px;">
+                                    @item.Text
                                 </div>
                             }
                             if (item.UserId != user.Id)
                             {
-                                <div style="background-color: #EEEEEE; border-radius: 8px; margin:10px; display:flex; align-self:flex-start; flex-direction:row;">
-                                    <p style="margin: 5px;"><strong>@item.User.FirstName @item.User.LastName </strong></p>
-                                    <p style="max-width:300px; margin: 5px;">@item.Text</p>
+                                <div style="background-color: #EEEEEE; border-radius: 8px; margin:10px;             display:flex; align-self:flex-start; flex-direction:row; max-width:300px;">
+                                    <strong>@item.User.FirstName @item.User.LastName </strong> @item.Text
                                 </div>
                             }
-                        }                       
-                        </div>
+                        }                                             
                     </div>
 
                     <input id="clientPageId[@i]" type="hidden" asp-for="ClientPage.Id" />
@@ -109,39 +106,46 @@
             </div>
             <script src="~/js/signalr/dist/browser/signalr.js"></script>
             <script>
-                "use strict";
-
+               
+                
                 var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 
                 //Disable send button until connection is established
-                document.getElementById("sendButton[@i]").disabled = true;
-                connection.on("ReceiveMessage", function (user, message) {                   
+                var button = document.getElementById("sendButton[@i]");
+
+                connection.on("ReceiveMessage", function (message, storyBoardId) {                 
                     var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-                    var encodedMsg = user + " " + msg;                  
-                    var div = document.createElement("div");                                     
+                    var encodedMsg = msg;
+                    var div = document.createElement("div");
+                    console.log("div created")
                     div.textContent = encodedMsg;
-                    div.style.backgroundColor = "#EEEEEE";
-                    document.getElementById("messagesList[@i]").appendChild(div);
-                    console.log("connection.on")
+                    div.style.backgroundColor = "#1D9EF1";
+                    div.style.color = "#FFFFFF";
+                    div.style.maxWidth = "300px";
+                    div.style.minWidth = "15px"; 
+                    div.style.display = "flex";
+                    div.style.flexDirection = "row";
+                    div.style.alignSelf = "flex-end";
+                    div.style.borderRadius = "8px";
+                    div.style.margin = "10px";
+                    div.style.padding = "8px";                 
+                    document.getElementById(`messagesList[${storyBoardId}]`).appendChild(div);                   
                 });
 
-                connection.start().then(function () {
-                    document.getElementById("sendButton[@i]").disabled = false;
-                }).catch(function (err) {
-                    return console.error(err.toString());
-                });
+                connection.start();
 
-                document.getElementById("sendButton[@i]").addEventListener("click", function (event) {
+                button.addEventListener("click", function (event) {
                     var user = document.getElementById("userInput[@i]").value;
+                    var storyBoardId = document.getElementById("storyBoardId[@i]").value
                     var message = document.getElementById("messageInput[@i]").value;
-                    connection.invoke("SendMessage", user, message).catch(function (err) {
+                    console.log("event triggered for sendButton[@i]");
+                    connection.invoke("SendMessage", user, message, storyBoardId).catch(function (err) {
                         return console.error(err.toString());
                     });
                     event.preventDefault();
                 });
             </script>
         </div>
-
         }
     </div>
 </div>
