@@ -1,33 +1,34 @@
 ﻿
-//"use strict";
+"use strict";
 
-//var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 
-////Disable send button until connection is established
+//Disable send button until connection is established
 //document.getElementById("sendButton").disabled = true;
 
-//connection.on("ReceiveMessage", function (user, message) {
-//    var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-//    var encodedMsg = user + " " + msg;
-//    var li = document.createElement("li");
-//    var p = document.createElement("p");
-//    p.textContent = encodedMsg;
-//    li.innerHTML = p;
-//    document.getElementById("messagesList").appendChild(li);
-//    console.log("connection.on")
-//});
+connection.on("ReceiveMessage", function (storyBoardId, user, message) {
+   var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+   var encodedMsg = msg;
+   var div = document.createElement("div");  
+   div.textContent = encodedMsg;
+   document.getElementById(`messagesList--${storyBoardId}`).appendChild(div);
+});
 
-//connection.start().then(function () {
-//    document.getElementById("sendButton").disabled = false;
-//}).catch(function (err) {
-//    return console.error(err.toString());
-//});
 
-//document.getElementById("sendButton").addEventListener("click", function (event) {
-//    var user = document.getElementById("userInput").value;
-//    var message = document.getElementById("messageInput").value;
-//    connection.invoke("SendMessage", user, message).catch(function (err) {
-//        return console.error(err.toString());
-//    });
-//    event.preventDefault();
-//});
+
+connection.start().then(function () {
+console.log("connected to hub")}).catch (function (err) {
+return console.error(err.toString());
+});
+
+
+
+document.getElementById("storyBoardsList").addEventListener("click", function (event) {
+    if (event.target.id.startsWith("sendButton")) {
+        var storyBoardId = event.target.id.split("--")[1];
+        console.log(`${storyBoardId} button clicked`);
+        var user = document.getElementById(`userInput--${storyBoardId}`).value;
+        var message = document.getElementById(`messageInput--${storyBoardId}`).value;
+        connection.invoke("SendMessage", storyBoardId, user, message);   
+    }
+});

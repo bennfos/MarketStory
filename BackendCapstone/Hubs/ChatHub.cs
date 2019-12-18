@@ -8,9 +8,9 @@ namespace BackendCapstone.Hubs
 {
     public class ChatHub : Hub
     {
-        public async Task SendMessage(string user, string message, int storyBoardId)
+        public async Task SendMessage(string storyBoardId, string user, string message)
         {
-            await Clients.All.SendAsync("ReceiveMessage", message, storyBoardId);
+            await Clients.All.SendAsync("ReceiveMessage", storyBoardId, user, message);
         }
     }
 }
