@@ -82,14 +82,15 @@
                             if (item.UserId == user.Id)
                             {
 
-                                <div style="color:#FFFFFF; background-color: #1D9EF1; border-radius: 8px; margin :10px; display:flex; align-self:flex-end; flex-direction:row; min-width:15px; max-width:300px;">
-                                    @item.Text
+                                <div style="color:#FFFFFF; background-color: #1D9EF1; border-radius: 8px; margin :10px; display:flex; align-self:flex-end; flex-direction:row; min-width:15px; max-width:300px; padding: 8px;">
+                                    <p>@item.Text</p>
                                 </div>
                             }
                             if (item.UserId != user.Id)
                             {
-                                <div style="background-color: #EEEEEE; border-radius: 8px; margin:10px;             display:flex; align-self:flex-start; flex-direction:row; max-width:300px;">
-                                    <strong>@item.User.FirstName @item.User.LastName </strong> @item.Text
+                                <div style="background-color: #EEEEEE; border-radius: 8px; margin:10px;             display:flex; align-self:flex-start; flex-direction:row; max-width:300px; padding: 8px;">
+                                    <p style="margin: 0 5px 0 0"><b>@item.User.FirstName @item.User.LastName</b></p>
+                                    <p>@item.Text</p>
                                 </div>
                             }
                         }                                             
@@ -97,53 +98,14 @@
 
                     <input id="clientPageId" type="hidden" asp-for="ClientPage.Id" />
                     <input id="storyBoardId" type="hidden" value="@Model.ClientPage.StoryBoards[i].Id" asp-for="@Model.StoryBoardId" />
-                    <input id="userInput--@Model.ClientPage.StoryBoards[i].Id" type="hidden" value="@user.FirstName @user.LastName" />
+                    <input id="userId--@Model.ClientPage.StoryBoards[i].Id" type="hidden" value="@user.Id" />                   
+                    <input id="loggedInUserId--@Model.ClientPage.StoryBoards[i].Id" type="hidden" value=""/>
                     <div style="display:flex; position: absolute; bottom: 15px;">
                         <input id="messageInput--@Model.ClientPage.StoryBoards[i].Id" style="border-radius: 5px; width: 525px;" placeholder="Add a comment..." />
                         <input id="sendButton--@Model.ClientPage.StoryBoards[i].Id" type="button" value="Post" class="btn" />
                     </div>
                 </div>
-            </div>
-            @*<script>
-               
-                
-                var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
-
-                
-                var button = document.getElementById("sendButton[@i]");  
-
-                connection.on("ReceiveMessage", function (message, storyBoardId) {                 
-                    var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-                    var encodedMsg = msg;
-                    var div = document.createElement("div");
-                    console.log("div created")
-                    div.textContent = encodedMsg;
-                    div.style.backgroundColor = "#1D9EF1";
-                    div.style.color = "#FFFFFF";
-                    div.style.maxWidth = "300px";
-                    div.style.minWidth = "15px"; 
-                    div.style.display = "flex";
-                    div.style.flexDirection = "row";
-                    div.style.alignSelf = "flex-end";
-                    div.style.borderRadius = "8px";
-                    div.style.margin = "10px";
-                    div.style.padding = "8px";                 
-                    document.getElementById(`messagesList[${storyBoardId}]`).appendChild(div);                   
-                });
-                
-                connection.start();
-
-                button.addEventListener("click", function (event) {
-                    var user = document.getElementById("userInput[@i]").value;
-                    var storyBoardId = document.getElementById("storyBoardId[@i]").value
-                    var message = document.getElementById("messageInput[@i]").value;
-                    console.log("event triggered for sendButton[@i]");
-                    connection.invoke("SendMessage", user, message, storyBoardId).catch(function (err) {
-                        return console.error(err.toString());
-                    });
-                    event.preventDefault();
-                });
-            </script>*@
+            </div>         
         </div>
         }
     </div>
@@ -155,5 +117,5 @@
     </div>
 }
 
-            <script src="~/js/signalr/dist/browser/signalr.js"></script>
-            <script src="~/js/chat.js"></script>
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/chat.js"></script>
