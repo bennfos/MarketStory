@@ -7,9 +7,6 @@ var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 
 connection.on("RemoveApproval", function (storyBoardId) {
     var approvalCheck = document.getElementById(`approvalCheck--${storyBoardId}`);
-    var approvalBox = document.getElementById(`approvalBox--${storyBoardId}`);
-    console.log(approvalBox.childNodes[1]);
-    console.log(approvalCheck);
     approvalCheck.remove();
 });
 
@@ -80,6 +77,7 @@ return console.error(err.toString());
 
 
 
+
 document.getElementById("storyBoardsList").addEventListener("click", function (event) {
     if (event.target.id.startsWith("sendButton")) {
         var storyBoardId = event.target.id.split("--")[1];
@@ -90,12 +88,21 @@ document.getElementById("storyBoardsList").addEventListener("click", function (e
     }
 });
 
-document.getElementById("storyBoardsList").addEventListener("click", function (event) {
-    if (event.target.id.startsWith("approval")) {       
-        var storyBoardId = event.target.id.split("--")[1];
-        console.log(`${storyBoardId} approval box clicked`);
-        var approvalBox = document.getElementById(`approvalBox--${storyBoardId}`)
-        console.log(approvalBox.childNodes);         
-        connection.invoke("SendApproval", storyBoardId);
-    }   
-});
+
+//write conditional so that event listener is present only for admin and client users
+var userTypeId = document.getElementById("userTypeId").value;
+if (userTypeId != "2") {
+    document.getElementById("storyBoardsList").addEventListener("click", function (event) {
+        if (event.target.id.startsWith("approval")) {       
+            var storyBoardId = event.target.id.split("--")[1];
+            console.log(`${storyBoardId} approval box clicked`);
+            var approvalBox = document.getElementById(`approvalBox--${storyBoardId}`)
+            console.log(approvalBox.childNodes);         
+            connection.invoke("SendApproval", storyBoardId);
+        };
+    });
+};
+    
+
+
+
