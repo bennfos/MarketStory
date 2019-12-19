@@ -36,11 +36,7 @@ namespace BackendCapstone.Controllers
                 return new SqlConnection(_config.GetConnectionString("DefaultConnection"));
             }
         }
-
-        public IActionResult Index()
-        {
-            return View();
-        }
+     
 
         public async Task<IActionResult> Details(string id)
         {
@@ -132,8 +128,7 @@ namespace BackendCapstone.Controllers
                             cmd.CommandText = @"SELECT DISTINCT cp.Id, cp.Name
                                 FROM ClientPages cp LEFT JOIN ClientPageUsers cpu ON cpu.ClientPageId = cp.Id
                                 WHERE cpu.Id IS NULL 
-                                OR
-                                cpu.UserId != @id
+                                OR cpu.UserId != @id
                                 AND cpu.ClientPageId NOT IN
                                 (SELECT cpu.ClientPageId
                                 FROM ClientPageUsers cpu WHERE cpu.UserId = @id);

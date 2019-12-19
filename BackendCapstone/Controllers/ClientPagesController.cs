@@ -50,7 +50,6 @@ namespace BackendCapstone.Controllers
                 .Where(cp => cp.UserId == currentUser.Id)
                 .Select(cp => cp.ClientPage)
                 .ToListAsync();
-
                 return View(assignedClientPages);           
             }
 
