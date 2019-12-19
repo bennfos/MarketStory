@@ -18,8 +18,7 @@ namespace BackendCapstone.Models
         public ClientPage ClientPage { get; set; }
         public string UserId { get; set; }
         public ApplicationUser User { get; set; }
-        [NotMapped]
-        public Chat Chat { get; set; }
+       
         public List<Chat> Chats { get; set; }
 
     }

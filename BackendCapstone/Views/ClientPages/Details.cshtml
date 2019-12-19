@@ -51,7 +51,17 @@
 
 
             <div style="margin: 30px 22px; width:320px; height:auto; border:1px solid #E6E6E6; background-color:#FDFDFD; border-radius:5px;">
-                <p><em>@Model.ClientPage.StoryBoards[i].PostDateTime</em></p>
+                <div style="display: flex; flex-direction: row; justify-content: flex-end;">
+                    <p style="margin: 10px 0 0 0"><em>@Model.ClientPage.StoryBoards[i].PostDateTime</em>
+                    </p>
+                    <div id="approvalBox--@Model.ClientPage.StoryBoards[i].Id" style="width: 30px; height: 30px; border: solid 1px #BBBBBB; border-radius: 4px; margin: 10px 10px 0 10px; display: flex;">
+                        @if (Model.ClientPage.StoryBoards[i].IsApproved == true) {                       
+                        <img style="justify-content: center; width: 32px; height: 32px;" src="~/images/checkmark.png"/>
+                        }
+                    </div>
+
+
+                </div>
                 <div style="margin:10px; display:flex; align-items:center; flex-direction:row; height:40px; padding: 16px;">
                     <img style="margin: 10px; border:double 3px #FF4251; width:35px; height: 35px; border-radius: 50%;" src="~/images/@Model.ClientPage.ImgPath" asp-append-version="true" />
                     <p><strong>@Model.ClientPage.Name</strong></p>
@@ -59,7 +69,7 @@
                 <div>
                     <img style="width:317px; height:280px;" asp-append-version="true" src="~/images/@Model.ClientPage.StoryBoards[i].ImgPath" />
                 </div>
-                <div style="">
+                <div >
                     <p>
                         <strong>@Model.ClientPage.Name</strong>&nbsp;@Model.ClientPage.StoryBoards[i].Text
                     </p>
@@ -119,3 +129,4 @@
 
 <script src="~/js/signalr/dist/browser/signalr.js"></script>
 <script src="~/js/chat.js"></script>
+

@@ -22,11 +22,9 @@ namespace BackendCapstone.Hubs
             _userManager = userManager;
         }
 
-        
-
+       
         public async System.Threading.Tasks.Task SendMessage(string storyBoardId, string userId, string message)
         {
-
             var chat = new Chat()
             {
                 Text = message,
@@ -49,7 +47,29 @@ namespace BackendCapstone.Hubs
             await Clients.Others.SendAsync("OthersReceiveMessage", storyBoardId, userId, otherChatUserName, message);
             await Clients.Caller.SendAsync("CallerReceiveMessage", storyBoardId, userId, message);
             
-        }        
+        }
+
+        public async System.Threading.Tasks.Task SendApproval(string storyBoardId)
+        {
+            var storyBoard = await _context.StoryBoards
+                .Where(sb => sb.Id == int.Parse(storyBoardId))
+                .FirstOrDefaultAsync();
+            if (storyBoard.IsApproved == false)
+            {
+                storyBoard.IsApproved = true;
+            }
+            else 
+            {
+                storyBoard.IsApproved = false;
+            }
+
+            _context.Update(storyBoard);
+            await _context.SaveChangesAsync();
+
+            await Clients.All.SendAsync("ReceiveApproval", storyBoardId);
+        
+        
+        }
 
     }
 }

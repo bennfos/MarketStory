@@ -4,7 +4,14 @@
 var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 
 //Disable send button until connection is established
-//document.getElementById("sendButton").disabled = true;
+
+connection.on("ReceiveApproval", function (storyBoardId) {
+    var img = document.createElement("img");
+    img.src = "/images/checkmark.png"
+    img.style.width = "30px";
+    img.style.height = "30px";
+    document.getElementById(`approvalBox--${storyBoardId}`).appendChild(img);
+});
 
 connection.on("CallerReceiveMessage", function (storyBoardId, userId, message) {
    var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -73,5 +80,13 @@ document.getElementById("storyBoardsList").addEventListener("click", function (e
         var message = document.getElementById(`messageInput--${storyBoardId}`).value;
         
         connection.invoke("SendMessage", storyBoardId, userId, message);   
+    }
+});
+
+document.getElementById("storyBoardsList").addEventListener("click", function (event) {
+    if (event.target.id.startsWith("approvalBox")) {
+        var storyBoardId = event.target.id.split("--")[1];
+        console.log(`${storyBoardId} approval box clicked`);
+        connection.invoke("SendApproval", storyBoardId);
     }
 });
