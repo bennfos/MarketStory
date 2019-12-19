@@ -73,6 +73,7 @@ namespace BackendCapstone.Controllers
 
             var orderedStoryBoards = await _context.StoryBoards             
                 .Include(sb => sb.Chats)
+                .ThenInclude(c => c.User)
                 .OrderBy(sb => sb.PostDateTime)
                 .Where(sb => sb.ClientPageId == clientPage.Id)
                 .ToListAsync();
@@ -83,13 +84,7 @@ namespace BackendCapstone.Controllers
                 .Select(cpu => cpu.User)
                 .ToListAsync();
 
-            foreach (var item in orderedStoryBoards)
-            {
-                item.Chats = await _context.Chat
-                    .Include(c => c.User)
-                    .Where(c => c.StoryBoardId == item.Id)
-                    .ToListAsync();
-            }
+            
 
             clientPage.StoryBoards = orderedStoryBoards;
             clientPage.Users = assignedUsers;

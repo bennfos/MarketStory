@@ -15,6 +15,7 @@ using Microsoft.Extensions.Hosting;
 using BackendCapstone.Models;
 using BackendCapstone.Hubs;
 
+
 namespace BackendCapstone
 {
     public class Startup
@@ -68,6 +69,7 @@ namespace BackendCapstone
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
                 endpoints.MapHub<ChatHub>("/chatHub");
+
             });
         }
     }
