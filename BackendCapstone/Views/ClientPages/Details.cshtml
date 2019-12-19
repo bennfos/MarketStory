@@ -47,67 +47,80 @@
     <div id="storyBoardsList" style="display: flex; flex-direction: row; justify-self: flex-end; flex-wrap:wrap;">
         @for (int i = 0; i < Model.ClientPage.StoryBoards.Count; i++)
         {
-        <div style="display: flex; flex-direction: row; margin: 30px 22px; height:auto; width:1000px; border:1px solid #E6E6E6; background-color:#FDFDFD; border-radius:5px;">
+            <div style="display: flex; flex-direction: row; margin: 30px 22px; height:auto; width:1000px; border:1px solid #E6E6E6; background-color:#FDFDFD; border-radius:5px;">
 
 
-            <div style="margin: 30px 22px; width:320px; height:auto; border:1px solid #E6E6E6; background-color:#FDFDFD; border-radius:5px;">
-                <p><em>@Model.ClientPage.StoryBoards[i].PostDateTime</em></p>
-                <div style="margin:10px; display:flex; align-items:center; flex-direction:row; height:40px; padding: 16px;">
-                    <img style="margin: 10px; border:double 3px #FF4251; width:35px; height: 35px; border-radius: 50%;" src="~/images/@Model.ClientPage.ImgPath" asp-append-version="true" />
-                    <p><strong>@Model.ClientPage.Name</strong></p>
-                </div>
-                <div>
-                    <img style="width:317px; height:280px;" asp-append-version="true" src="~/images/@Model.ClientPage.StoryBoards[i].ImgPath" />
-                </div>
-                <div style="">
-                    <p>
-                        <strong>@Model.ClientPage.Name</strong>&nbsp;@Model.ClientPage.StoryBoards[i].Text
-                    </p>
-                </div>
-                @if (user.UserTypeId != 3)
-                {
-                    <div style="display: flex; align-content:center; justify-content: center;">
-                        <a asp-route-id=@Model.ClientPage.StoryBoards[i].Id asp-controller="StoryBoards" asp-action="Edit">Edit</a>&nbsp;|&nbsp;
-                        <a asp-route-id=@Model.ClientPage.StoryBoards[i].Id asp-controller="StoryBoards" asp-action="Delete">Delete</a>
+                <div style="margin: 30px 22px; width:320px; height:auto; border:1px solid #E6E6E6; background-color:#FDFDFD; border-radius:5px;">
+                    <div style="display: flex; flex-direction: row; justify-content: flex-end;">
+                        <p style="margin: 10px 0 0 0">
+                            <em>@Model.ClientPage.StoryBoards[i].PostDateTime</em>
+                        </p>
+                        <div id="approvalBox--@Model.ClientPage.StoryBoards[i].Id" style="width: 30px; height: 30px; border: solid 1px #BBBBBB; border-radius: 4px; margin: 10px 10px 0 10px; display: flex;">
+                            @if (Model.ClientPage.StoryBoards[i].IsApproved == true)
+                            {
+                                <img id="approvalCheck--@Model.ClientPage.StoryBoards[i].Id" style="justify-content: center; width: 30px; height: 30px;" src="~/images/checkmark.png" />
+                            }
+                        </div>
+
+
                     </div>
-                }
+                    <div style="margin:10px; display:flex; align-items:center; flex-direction:row; height:40px; padding: 16px;">
+                        <img style="margin: 10px; border:double 3px #FF4251; width:35px; height: 35px; border-radius: 50%;" src="~/images/@Model.ClientPage.ImgPath" asp-append-version="true" />
+                        <p><strong>@Model.ClientPage.Name</strong></p>
+                    </div>
+                    <div>
+                        <img style="width:317px; height:280px;" asp-append-version="true" src="~/images/@Model.ClientPage.StoryBoards[i].ImgPath" />
+                    </div>
+                    <div>
+                        <p>
+                            <strong>@Model.ClientPage.Name</strong>&nbsp;@Model.ClientPage.StoryBoards[i].Text
+                        </p>
+                    </div>
+                    @if (user.UserTypeId != 3)
+                    {
+                        <div style="display: flex; align-content:center; justify-content: center;">
+                            <a asp-route-id=@Model.ClientPage.StoryBoards[i].Id asp-controller="StoryBoards" asp-action="Edit">Edit</a>&nbsp;|&nbsp;
+                            <a asp-route-id=@Model.ClientPage.StoryBoards[i].Id asp-controller="StoryBoards" asp-action="Delete">Delete</a>
+                        </div>
+                    }
+                </div>
+
+                <div style="display:flex; width:680px; height:550px">
+                    <div style="position: relative; display: flex; flex-direction: column; width:615px; overflow-y:auto">
+                        <div id="messagesList--@Model.ClientPage.StoryBoards[i].Id" style="top:0; display:flex; flex-direction:column;margin: 20px 10px 70px 10px; overflow-y:auto;">
+                            @foreach (var item in Model.ClientPage.StoryBoards[i].Chats)
+                            {
+
+                                if (item.UserId == user.Id)
+                                {
+
+                                    <div style="color:#FFFFFF; background-color: #1D9EF1; border-radius: 8px; margin :10px; display:flex; align-self:flex-end; flex-direction:row; min-width:15px; max-width:350px; padding: 8px;">
+                                        <p style="margin: 5px;">@item.Text</p>
+                                    </div>
+                                }
+                                if (item.UserId != user.Id)
+                                {
+                                    <div style="background-color: #EEEEEE; border-radius: 8px; margin:10px;             display:flex; align-self:flex-start; flex-direction:row; max-width:350px; padding:   8px;">
+                                        <p style="margin: 5px;"><b>@item.User.FirstName @item.User.LastName</b></p>
+                                        <p style="margin: 5px;">@item.Text</p>
+                                    </div>
+                                }
+                            }
+                        </div>
+
+                        <input id="clientPageId" type="hidden" asp-for="ClientPage.Id" />
+                        <input id="storyBoardId" type="hidden" value="@Model.ClientPage.StoryBoards[i].Id" asp-for="@Model.StoryBoardId" />
+                        <input id="userId--@Model.ClientPage.StoryBoards[i].Id" type="hidden" value="@user.Id" />
+
+                        <div style="display:flex; position: absolute; bottom: 15px;">
+                            <input id="messageInput--@Model.ClientPage.StoryBoards[i].Id" style="border-radius: 5px; width: 525px;" placeholder="Add a comment..." />
+                            <input id="sendButton--@Model.ClientPage.StoryBoards[i].Id" type="button" value="Post" class="btn" />
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <div style="display:flex; width:680px; height:550px">
-                <div style="position: relative; display: flex; flex-direction: column; width:615px; overflow-y:auto">
-                    <div id="messagesList--@Model.ClientPage.StoryBoards[i].Id" style="top:0; display:flex; flex-direction:column;margin: 20px 10px 70px 10px; overflow-y:auto;">                      
-                        @foreach (var item in Model.ClientPage.StoryBoards[i].Chats)
-                        {
-
-                            if (item.UserId == user.Id)
-                            {
-
-                                <div style="color:#FFFFFF; background-color: #1D9EF1; border-radius: 8px; margin :10px; display:flex; align-self:flex-end; flex-direction:row; min-width:15px; max-width:300px; padding: 8px;">
-                                    <p>@item.Text</p>
-                                </div>
-                            }
-                            if (item.UserId != user.Id)
-                            {
-                                <div style="background-color: #EEEEEE; border-radius: 8px; margin:10px;             display:flex; align-self:flex-start; flex-direction:row; max-width:300px; padding:   8px;">
-                                    <p style="margin: 0 5px 0 0"><b>@item.User.FirstName @item.User.LastName</b></p>
-                                    <p>@item.Text</p>
-                                </div>
-                            }
-                        }                                             
-                    </div>
-
-                    <input id="clientPageId" type="hidden" asp-for="ClientPage.Id" />
-                    <input id="storyBoardId" type="hidden" value="@Model.ClientPage.StoryBoards[i].Id" asp-for="@Model.StoryBoardId" />
-                    <input id="userId--@Model.ClientPage.StoryBoards[i].Id" type="hidden" value="@user.Id" />                   
-                    <input id="loggedInUserId--@Model.ClientPage.StoryBoards[i].Id" type="hidden" value=""/>
-                    <div style="display:flex; position: absolute; bottom: 15px;">
-                        <input id="messageInput--@Model.ClientPage.StoryBoards[i].Id" style="border-radius: 5px; width: 525px;" placeholder="Add a comment..." />
-                        <input id="sendButton--@Model.ClientPage.StoryBoards[i].Id" type="button" value="Post" class="btn" />
-                    </div>
-                </div>
-            </div>         
-        </div>
         }
+        <input id="userTypeId" type="hidden" value="@user.UserTypeId" />
     </div>
 </div>
 @if (user.UserTypeId != 3)
@@ -119,3 +132,4 @@
 
 <script src="~/js/signalr/dist/browser/signalr.js"></script>
 <script src="~/js/chat.js"></script>
+
