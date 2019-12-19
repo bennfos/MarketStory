@@ -54,9 +54,9 @@
                 <div style="display: flex; flex-direction: row; justify-content: flex-end;">
                     <p style="margin: 10px 0 0 0"><em>@Model.ClientPage.StoryBoards[i].PostDateTime</em>
                     </p>
-                    <div id="approvalBox--@Model.ClientPage.StoryBoards[i].Id" style="width: 30px; height: 30px; border: solid 1px #BBBBBB; border-radius: 4px; margin: 10px 10px 0 10px; display: flex;">
+                    <div id="approvalBox--@Model.ClientPage.StoryBoards[i].Id" style="width: 30px; height: 30px; border: solid 1px #BBBBBB; border-radius: 4px; margin: 10px 10px 0 10px; display: flex;">                      
                         @if (Model.ClientPage.StoryBoards[i].IsApproved == true) {                       
-                        <img style="justify-content: center; width: 32px; height: 32px;" src="~/images/checkmark.png"/>
+                        <img id="approvalCheck--@Model.ClientPage.StoryBoards[i].Id" style="justify-content: center; width: 30px; height: 30px;" src="~/images/checkmark.png"/>
                         }
                     </div>
 

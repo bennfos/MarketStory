@@ -5,11 +5,20 @@ var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 
 //Disable send button until connection is established
 
+connection.on("RemoveApproval", function (storyBoardId) {
+    var approvalCheck = document.getElementById(`approvalCheck--${storyBoardId}`);
+    var approvalBox = document.getElementById(`approvalBox--${storyBoardId}`);
+    console.log(approvalBox.childNodes[1]);
+    console.log(approvalCheck);
+    approvalCheck.remove();
+});
+
 connection.on("ReceiveApproval", function (storyBoardId) {
     var img = document.createElement("img");
     img.src = "/images/checkmark.png"
     img.style.width = "30px";
     img.style.height = "30px";
+    img.id = `approvalCheck--${storyBoardId}`
     document.getElementById(`approvalBox--${storyBoardId}`).appendChild(img);
 });
 
@@ -75,18 +84,18 @@ document.getElementById("storyBoardsList").addEventListener("click", function (e
     if (event.target.id.startsWith("sendButton")) {
         var storyBoardId = event.target.id.split("--")[1];
         console.log(`${storyBoardId} button clicked`);
-        var userName = document.getElementById(`userName--${storyBoardId}`.value);
         var userId = document.getElementById(`userId--${storyBoardId}`).value;
-        var message = document.getElementById(`messageInput--${storyBoardId}`).value;
-        
+        var message = document.getElementById(`messageInput--${storyBoardId}`).value;        
         connection.invoke("SendMessage", storyBoardId, userId, message);   
     }
 });
 
 document.getElementById("storyBoardsList").addEventListener("click", function (event) {
-    if (event.target.id.startsWith("approvalBox")) {
+    if (event.target.id.startsWith("approval")) {       
         var storyBoardId = event.target.id.split("--")[1];
         console.log(`${storyBoardId} approval box clicked`);
+        var approvalBox = document.getElementById(`approvalBox--${storyBoardId}`)
+        console.log(approvalBox.childNodes);         
         connection.invoke("SendApproval", storyBoardId);
-    }
+    }   
 });

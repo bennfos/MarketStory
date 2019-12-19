@@ -49,6 +49,19 @@ namespace BackendCapstone.Hubs
             
         }
 
+        /*public async void ControlApproval(string storyBoardId, string isApproved)
+        {
+            if (isApproved == "false")
+            {
+                await SendApproval(storyBoardId);
+            }
+
+            if (isApproved == "true")
+            {
+                await RemoveApproval(storyBoardId);
+            }
+        }*/
+
         public async System.Threading.Tasks.Task SendApproval(string storyBoardId)
         {
             var storyBoard = await _context.StoryBoards
@@ -57,8 +70,29 @@ namespace BackendCapstone.Hubs
             if (storyBoard.IsApproved == false)
             {
                 storyBoard.IsApproved = true;
+                _context.Update(storyBoard);
+                await _context.SaveChangesAsync();
+                await Clients.All.SendAsync("ReceiveApproval", storyBoardId);
             }
             else 
+            {
+                storyBoard.IsApproved = false;
+                _context.Update(storyBoard);
+                await _context.SaveChangesAsync();
+                await Clients.All.SendAsync("RemoveApproval", storyBoardId);
+            }                   
+        }
+
+        /*public async System.Threading.Tasks.Task RemoveApproval(string storyBoardId)
+        {
+            var storyBoard = await _context.StoryBoards
+                    .Where(sb => sb.Id == int.Parse(storyBoardId))
+                    .FirstOrDefaultAsync();
+            if (storyBoard.IsApproved == false)
+            {
+                storyBoard.IsApproved = true;
+            }
+            else
             {
                 storyBoard.IsApproved = false;
             }
@@ -67,9 +101,6 @@ namespace BackendCapstone.Hubs
             await _context.SaveChangesAsync();
 
             await Clients.All.SendAsync("ReceiveApproval", storyBoardId);
-        
-        
-        }
-
+        }*/
     }
 }
