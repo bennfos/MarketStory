@@ -45,7 +45,7 @@ connection.on("OthersReceiveMessage", function (storyBoardId, userId, userName, 
     div.style.margin = "10px";
     div.style.padding = "8px";
     pUser.style.fontWeight = "bold";
-    pUser.style.margin = "0 5px 0 0;"
+    pUser.style.margin = "5px";
     pMessage.style.margin = "5px";
     pUser.textContent = userName;
     pMessage.textContent = encodedMsg;
