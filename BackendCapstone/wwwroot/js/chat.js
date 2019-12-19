@@ -13,7 +13,7 @@ connection.on("CallerReceiveMessage", function (storyBoardId, userId, message) {
     var pMessage = document.createElement("p")
     div.style.backgroundColor = "#1D9EF1";
     div.style.color = "#FFFFFF";
-    div.style.maxWidth = "300px";
+    div.style.maxWidth = "350px";
     div.style.minWidth = "15px";
     div.style.display = "flex";
     div.style.flexDirection = "row";
@@ -36,7 +36,7 @@ connection.on("OthersReceiveMessage", function (storyBoardId, userId, userName, 
     var pUser = document.createElement("p");
     var pMessage = document.createElement("p")
     div.style.backgroundColor = "#EEEEEE";   
-    div.style.maxWidth = "300px";
+    div.style.maxWidth = "350px";
     div.style.minWidth = "15px";
     div.style.display = "flex";
     div.style.flexDirection = "row";
