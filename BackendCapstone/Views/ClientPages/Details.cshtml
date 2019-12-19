@@ -1,4 +1,5 @@
-﻿@model BackendCapstone.Models.ClientPageViewModels.ClientPageDetailsViewModel
+﻿
+@model BackendCapstone.Models.ClientPageViewModels.ClientPageDetailsViewModel
 @using Microsoft.AspNetCore.Identity
 @inject UserManager<ApplicationUser> UserManager
 @{var user = await UserManager.GetUserAsync(User);}
@@ -13,24 +14,24 @@
     <div style="width:50%; display:flex; flex-direction:row; justify-content:flex-end;">
         @foreach (var item in Model.ClientPage.Users)
         {
-        <div style="margin:10px 10px 10px 10px;">
-            @if (user.UserTypeId == 3)
-            {
-            <div style="display: flex; flex-direction: column; justify-content: center;">
-                <img style="width:70px; height: 70px; border-radius: 50%;" src="~/images/@item.ImgPath" asp-append-version="true" />
-                <p>@item.FirstName @item.LastName</p>
+            <div style="margin:10px 10px 10px 10px;">
+                @if (user.UserTypeId == 3)
+                {
+                    <div style="display: flex; flex-direction: column; justify-content: center;">
+                        <img style="width:70px; height: 70px; border-radius: 50%;" src="~/images/@item.ImgPath" asp-append-version="true" />
+                        <p>@item.FirstName @item.LastName</p>
+                    </div>
+                }
+                @if (user.UserTypeId != 3)
+                {
+                    <a asp-controller="ApplicationUsers" asp-action="Details" asp-route-id="@item.Id">
+                        <div style="display: flex; flex-direction: column; justify-content: center;">
+                            <img style="width:70px; height: 70px; border-radius: 50%;" src="~/images/@item.ImgPath" asp-append-version="true" />
+                            <p>@item.FirstName @item.LastName</p>
+                        </div>
+                    </a>
+                }
             </div>
-            }
-            @if (user.UserTypeId != 3)
-            {
-            <a asp-controller="ApplicationUsers" asp-action="Details" asp-route-id="@item.Id">
-                <div style="display: flex; flex-direction: column; justify-content: center;">
-                    <img style="width:70px; height: 70px; border-radius: 50%;" src="~/images/@item.ImgPath" asp-append-version="true" />
-                    <p>@item.FirstName @item.LastName</p>
-                </div>
-            </a>
-            }
-        </div>
         }
     </div>
 </div>
@@ -43,10 +44,12 @@
 }
 
 <div style="display: flex; flex-direction: row; justify-content: flex-start;">
-    <div style="display: flex; flex-direction: row; justify-self: flex-end; flex-wrap:wrap;">
+    <div id="storyBoardsList" style="display: flex; flex-direction: row; justify-self: flex-end; flex-wrap:wrap;">
         @for (int i = 0; i < Model.ClientPage.StoryBoards.Count; i++)
         {
         <div style="display: flex; flex-direction: row; margin: 30px 22px; height:auto; width:1000px; border:1px solid #E6E6E6; background-color:#FDFDFD; border-radius:5px;">
+
+
             <div style="margin: 30px 22px; width:320px; height:auto; border:1px solid #E6E6E6; background-color:#FDFDFD; border-radius:5px;">
                 <p><em>@Model.ClientPage.StoryBoards[i].PostDateTime</em></p>
                 <div style="margin:10px; display:flex; align-items:center; flex-direction:row; height:40px; padding: 16px;">
@@ -69,40 +72,41 @@
                     </div>
                 }
             </div>
-            <div style="display:flex; width:680px; height:550px"  >
+
+            <div style="display:flex; width:680px; height:550px">
                 <div style="position: relative; display: flex; flex-direction: column; width:615px; overflow-y:auto">
-                    <div style="top:0; display:flex; flex-direction:column;margin: 20px 10px 70px 10px; overflow-y:auto;" >
+                    <div id="messagesList--@Model.ClientPage.StoryBoards[i].Id" style="top:0; display:flex; flex-direction:column;margin: 20px 10px 70px 10px; overflow-y:auto;">                      
                         @foreach (var item in Model.ClientPage.StoryBoards[i].Chats)
                         {
-                            
+
                             if (item.UserId == user.Id)
                             {
-                                <div style="color:#FFFFFF; background-color: #1D9EF1; border-radius: 8px; margin :10px; display:flex; align-self:flex-end; flex-direction:row;">
-                                    <p style="min-width:15px; max-width:300px; margin: 5px;">@item.Text</p>
+
+                                <div style="color:#FFFFFF; background-color: #1D9EF1; border-radius: 8px; margin :10px; display:flex; align-self:flex-end; flex-direction:row; min-width:15px; max-width:300px; padding: 8px;">
+                                    <p>@item.Text</p>
                                 </div>
                             }
                             if (item.UserId != user.Id)
                             {
-                                <div style="background-color: #EEEEEE; border-radius: 8px; margin:10px; display:flex; align-self:flex-start; flex-direction:row;">
-                                    <p style="margin: 5px;"><strong>@item.User.FirstName @item.User.LastName</strong></p>
-                                    <p style="max-width:300px; margin: 5px;">@item.Text</p>
+                                <div style="background-color: #EEEEEE; border-radius: 8px; margin:10px;             display:flex; align-self:flex-start; flex-direction:row; max-width:300px; padding:   8px;">
+                                    <p style="margin: 0 5px 0 0"><b>@item.User.FirstName @item.User.LastName</b></p>
+                                    <p>@item.Text</p>
                                 </div>
                             }
-
-                        }
+                        }                                             
                     </div>
-                    <form asp-action="PostChat">
-                        <input type="hidden" asp-for="ClientPage.Id" />
-                        <input type="hidden" value="@Model.ClientPage.StoryBoards[i].Id" asp-for="@Model.StoryBoardId" />
-                        <div class="form-group" style="display:flex; position: absolute; bottom: 15px;">
-                            <input id="messageInput" asp-for="ChatText" style="border-radius: 5px; width: 525px;" placeholder="Add a comment..." />
-                            <input id="postButton" type="button" value="Post" class="btn" />
-                        </div>
-                    </form>
+
+                    <input id="clientPageId" type="hidden" asp-for="ClientPage.Id" />
+                    <input id="storyBoardId" type="hidden" value="@Model.ClientPage.StoryBoards[i].Id" asp-for="@Model.StoryBoardId" />
+                    <input id="userId--@Model.ClientPage.StoryBoards[i].Id" type="hidden" value="@user.Id" />                   
+                    <input id="loggedInUserId--@Model.ClientPage.StoryBoards[i].Id" type="hidden" value=""/>
+                    <div style="display:flex; position: absolute; bottom: 15px;">
+                        <input id="messageInput--@Model.ClientPage.StoryBoards[i].Id" style="border-radius: 5px; width: 525px;" placeholder="Add a comment..." />
+                        <input id="sendButton--@Model.ClientPage.StoryBoards[i].Id" type="button" value="Post" class="btn" />
+                    </div>
                 </div>
-            </div>
+            </div>         
         </div>
-          
         }
     </div>
 </div>
@@ -112,3 +116,6 @@
         <a asp-action="Index">Back to Client Pages</a>
     </div>
 }
+
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/chat.js"></script>

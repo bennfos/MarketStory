@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using BackendCapstone.Models;
+using BackendCapstone.Hubs;
 
 
 namespace BackendCapstone
@@ -67,7 +68,8 @@ namespace BackendCapstone
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
-               
+                endpoints.MapHub<ChatHub>("/chatHub");
+
             });
         }
     }
