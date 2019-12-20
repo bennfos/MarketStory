@@ -56,6 +56,7 @@ namespace BackendCapstone.Hubs
             var storyBoard = await _context.StoryBoards
                 .Where(sb => sb.Id == int.Parse(storyBoardId))
                 .FirstOrDefaultAsync();
+
             if (storyBoard.IsApproved == false)
             {
                 storyBoard.IsApproved = true;

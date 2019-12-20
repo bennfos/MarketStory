@@ -44,18 +44,27 @@ namespace BackendCapstone.Controllers
                 return NotFound();
             }
 
-            var @event = await _context.EventUsers
-                .Include(eu => eu.Event)
-                .Include(eu => eu.User)
-                .Select(eu => eu.Event)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var @event = await _context.Events                             
+                .Where(eu => eu.Id == id)
+                .FirstOrDefaultAsync();
 
-            var attendees = await _context.EventUsers
-                .Where(eu => eu.EventId == @event.Id)
-                .Select(eu => eu.User)
-                .ToListAsync();
+            var eventUsersBool = _context.EventUsers
+                .Any(eu => eu.EventId == id);
 
-            @event.Attendees = attendees;
+
+            if (eventUsersBool == true)
+            {
+                var attendees = await _context.EventUsers
+                    .Include(eu => eu.Event)
+                    .Include(eu => eu.User)
+                    .Where(eu => eu.EventId == @event.Id)
+                    .Select(eu => eu.User)
+                    .ToListAsync();
+
+                @event.Attendees = attendees;               
+            }
+
+
             
             if (@event == null)
             {
@@ -65,7 +74,7 @@ namespace BackendCapstone.Controllers
             return View(@event);
         }
 
-        public async Task<IActionResult> RSVP(int id)
+        public async Task<IActionResult> Attend(int id)
         {
             var user = await GetCurrentUserAsync();
 

@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace BackendCapstone.Controllers
 {
+    []
     public class ApplicationUsersController : Controller
     {
         private readonly IConfiguration _config;

@@ -16,7 +16,9 @@ connection.on("ReceiveApproval", function (storyBoardId) {
     img.style.width = "30px";
     img.style.height = "30px";
     img.id = `approvalCheck--${storyBoardId}`
+
     document.getElementById(`approvalBox--${storyBoardId}`).appendChild(img);
+    alert("Approved!");
 });
 
 connection.on("CallerReceiveMessage", function (storyBoardId, userId, message) {
@@ -85,6 +87,14 @@ document.getElementById("storyBoardsList").addEventListener("click", function (e
         var userId = document.getElementById(`userId--${storyBoardId}`).value;
         var message = document.getElementById(`messageInput--${storyBoardId}`).value;        
         connection.invoke("SendMessage", storyBoardId, userId, message);   
+    }
+});
+
+
+document.getElementById("storyBoardsList").addEventListener("click", function (event) {
+    if (event.target.id.startsWith("messageInput")) {
+        var storyBoardId = event.target.id.split("--")[1];
+        connection.invoke("TypingIndicator", storyBoardId);
     }
 });
 
