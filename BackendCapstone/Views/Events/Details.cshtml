@@ -1,0 +1,70 @@
+﻿@model BackendCapstone.Models.Event
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@{var user = await UserManager.GetUserAsync(User);}
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+
+
+    <h1>@Model.Name</h1>
+
+<hr />
+<div>
+    
+    <div style="display: flex; margin: 30px; width:1000px; height:315px; background-color:#FAFAFA; border-radius:3px;">
+        <div style="margin: 0 15px 0 0;">
+            <img style="width:300px; height:315px;" asp-append-version="true" src="~/images/@Model.ImgPath" />
+        </div>
+        <div style="margin:15px 0 0 0;">
+            <div style="display:flex; flex-direction:column;">
+                <p>
+                    @Model.Description
+                </p>               
+                <hr />
+                <p>@Model.Location</p>
+                <p>@Model.DateTime</p>              
+                <p>Attendees:</p>
+                <div style="display:flex; flex-direction:row;">
+                    @{if (Model.Attendees != null && Model.Attendees.Count != 0)
+                        {
+                            foreach (var item in Model.Attendees)
+                            {
+                                <div style="margin:10px 10px 10px 10px;">
+                                    @if (user.UserTypeId != 3)
+                                    {
+                                        <a asp-controller="ApplicationUsers" asp-action="MarketingUserDetails" asp-route-id="@item.Id">
+                                            <div style="display: flex; flex-direction: column;">
+                                                <img style="align-self: center; width:70px; height: 70px; border-radius: 50%;" src="~/images/@item.ImgPath" asp-append-version="true" />
+                                                <p>@item.FirstName @item.LastName</p>
+                                            </div>
+                                        </a>
+                                    }
+
+                                    @if (user.UserTypeId == 3)
+                                    {
+                                        <div style="display: flex; flex-direction: column; justify-content: center;">
+                                            <img style="width:70px; height: 70px; border-radius: 50%;" src="~/images/@item.ImgPath" asp-append-version="true" />
+                                            <p>@item.FirstName @item.LastName</p>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <form asp-action="Attend">
+            <input type="hidden" asp-for="Id" />
+            <input type="submit" value="RSVP" class="btn btn-danger" /> 
+        </form>
+        <hr />
+        <a asp-action="Index">Back to Events</a>
+    </div>
+</div>
+

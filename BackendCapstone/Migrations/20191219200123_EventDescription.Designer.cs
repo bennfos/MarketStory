@@ -4,14 +4,16 @@ using BackendCapstone.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BackendCapstone.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191219200123_EventDescription")]
+    partial class EventDescription
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,7 +111,7 @@ namespace BackendCapstone.Migrations
                         {
                             Id = "00000000-ffff-ffff-ffff-ffffffffffff",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "fe298829-e506-4f9d-b420-a4403cae757a",
+                            ConcurrencyStamp = "3564e8ef-2c89-4172-98de-31e0ff006c65",
                             Email = "admin@marketing.com",
                             EmailConfirmed = true,
                             FirstName = "Admina",
@@ -117,7 +119,7 @@ namespace BackendCapstone.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@MARKETING.COM",
                             NormalizedUserName = "ADMIN@MARKETING.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEPEv4KVQu9dNdMdXDyQibvO0GRwf55BcGbfGKoVLADzwUiPasZFg0RShyRg4umNkvw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEG6c3Ja/joTv29h/R8b0aSi2GI1sfcQsR3kSyGmZGEyeBj+v9RXp6T2AvLx2BMi+9g==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "7f434309-a4d9-48e9-9ebb-8803db794577",
                             TwoFactorEnabled = false,
@@ -277,28 +279,6 @@ namespace BackendCapstone.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Events");
-                });
-
-            modelBuilder.Entity("BackendCapstone.Models.EventUser", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("EventId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EventId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("EventUsers");
                 });
 
             modelBuilder.Entity("BackendCapstone.Models.Message", b =>
@@ -617,19 +597,6 @@ namespace BackendCapstone.Migrations
                     b.HasOne("BackendCapstone.Models.ClientPage", "ClientPage")
                         .WithMany()
                         .HasForeignKey("ClientPageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BackendCapstone.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("BackendCapstone.Models.EventUser", b =>
-                {
-                    b.HasOne("BackendCapstone.Models.Event", "Event")
-                        .WithMany()
-                        .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

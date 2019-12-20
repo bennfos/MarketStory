@@ -7,37 +7,36 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BackendCapstone.Data;
 using BackendCapstone.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Http;
-using BackendCapstone.Models.StoryBoardViewModels;
+using BackendCapstone.Models.ClientPageViewModels;
+using BackendCapstone.Models.EventViewModels;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 
 namespace BackendCapstone.Controllers
 {
-    public class StoryBoardsController : Controller
+    public class EventsController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
-
-        public StoryBoardsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment)
-        {
-            _context = context;
-            _userManager = userManager;
-            _webHostEnvironment = webHostEnvironment;
-        }
+        private readonly UserManager<ApplicationUser> _userManager;
 
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
-        // GET: StoryBoards
-        public async Task<IActionResult> Index()
+        public EventsController(UserManager<ApplicationUser> userManager, ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
         {
-            var applicationDbContext = _context.StoryBoards.Include(s => s.ClientPage).Include(s => s.User);
-            return View(await applicationDbContext.ToListAsync());
+            _userManager = userManager;
+            _context = context;
+            _webHostEnvironment = webHostEnvironment;
         }
 
-        // GET: StoryBoards/Details/5
+        // GET: Events
+        public async Task<IActionResult> Index()
+        {
+            return View(await _context.Events.ToListAsync());
+        }
+
+        // GET: Events/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -45,44 +44,57 @@ namespace BackendCapstone.Controllers
                 return NotFound();
             }
 
-            var storyBoard = await _context.StoryBoards
-                .Include(s => s.ClientPage)
-                .Include(s => s.User)
+            var @event = await _context.EventUsers
+                .Include(eu => eu.Event)
+                .Include(eu => eu.User)
+                .Select(eu => eu.Event)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (storyBoard == null)
+
+            var attendees = await _context.EventUsers
+                .Where(eu => eu.EventId == @event.Id)
+                .Select(eu => eu.User)
+                .ToListAsync();
+
+            @event.Attendees = attendees;
+            
+            if (@event == null)
             {
                 return NotFound();
             }
 
-            return View(storyBoard);
+            return View(@event);
         }
 
-        // GET: StoryBoards/Create
-        public IActionResult Create([FromRoute]int id)
+        public async Task<IActionResult> RSVP(int id)
         {
-            var storyBoard = new StoryBoard()
+            var user = await GetCurrentUserAsync();
+
+            var eventUser = new EventUser()
             {
-                PostDateTime = DateTime.Now,
-                ClientPageId = id
+                EventId = id,
+                UserId = user.Id
             };
 
-            var viewModel = new StoryBoardCreateEditViewModel()
-            {
-                StoryBoard = storyBoard
-            };
+            _context.Add(eventUser);
+            await _context.SaveChangesAsync();
 
+            return RedirectToAction("Details", new { Id = id });
+        }
+
+        // GET: Events/Create
+        public IActionResult Create()
+        {
+            var viewModel = new EventCreateEditViewModel();
             return View(viewModel);
         }
 
-        // POST: StoryBoards/Create
+        // POST: Events/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(StoryBoardCreateEditViewModel viewModel)
+        public async Task<IActionResult> Create(EventCreateEditViewModel viewModel)
         {
-            var currentUser = await GetCurrentUserAsync();
-            var storyBoard = viewModel.StoryBoard;
             if (ModelState.IsValid)
             {
                 if (viewModel.Img != null)
@@ -94,18 +106,18 @@ namespace BackendCapstone.Controllers
                     {
                         viewModel.Img.CopyTo(myFile);
                     }
-                    viewModel.StoryBoard.ImgPath = uniqueFileName;
+                    viewModel.Event.ImgPath = uniqueFileName;
                 }
-                storyBoard.Timestamp = DateTime.Now;
-                storyBoard.UserId = currentUser.Id;
-                _context.Add(storyBoard);
+                _context.Add(viewModel.Event);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Details", "ClientPages", new { Id = storyBoard.ClientPageId } );
-            }          
+
+                return RedirectToAction(nameof(Index));
+            }
             return View(viewModel);
         }
 
-        // GET: StoryBoards/Edit/5
+
+        // GET: Events/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -113,47 +125,41 @@ namespace BackendCapstone.Controllers
                 return NotFound();
             }
 
-            var storyBoard = await _context.StoryBoards
-                .Include(sb => sb.User)
-                .Where(sb => sb.Id == id)
-                .FirstOrDefaultAsync();
-            var viewModel = new StoryBoardCreateEditViewModel()
+            var @event = await _context.Events.FindAsync(id);
+
+            var viewModel = new EventCreateEditViewModel()
             {
-                StoryBoard = storyBoard
+                Event = @event
             };
-            if (storyBoard == null)
+
+            if (@event == null)
             {
                 return NotFound();
             }
-            
             return View(viewModel);
         }
 
-        // POST: StoryBoards/Edit/5
+        // POST: Events/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, StoryBoardCreateEditViewModel viewModel)
+        public async Task<IActionResult> Edit(EventCreateEditViewModel viewModel)
         {
-            if (id != viewModel.StoryBoard.Id)
-            {
-                return NotFound();
-            }
-
+            
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var currentFileName = viewModel.StoryBoard.ImgPath;
+                    var currentFileName = viewModel.Event.ImgPath;
                     if (viewModel.Img != null && viewModel.Img.FileName != currentFileName)
                     {
                         if (currentFileName != null)
-                        {                      
+                        {
                             var images = Directory.GetFiles("wwwroot/images");
                             var fileToDelete = images.First(i => i.Contains(currentFileName));
                             System.IO.File.Delete(fileToDelete);
-                        }                    
+                        }
                         var uniqueFileName = GetUniqueFileName(viewModel.Img.FileName);
                         var imageDirectory = Path.Combine(_webHostEnvironment.WebRootPath, "images");
                         var filePath = Path.Combine(imageDirectory, uniqueFileName);
@@ -161,14 +167,16 @@ namespace BackendCapstone.Controllers
                         {
                             viewModel.Img.CopyTo(myFile);
                         }
-                        viewModel.StoryBoard.ImgPath = uniqueFileName;
+                        viewModel.Event.ImgPath = uniqueFileName;
                     }
-                    _context.Update(viewModel.StoryBoard);
+                    
+                    _context.Update(viewModel.Event);
                     await _context.SaveChangesAsync();
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!StoryBoardExists(viewModel.StoryBoard.Id))
+                    if (!EventExists(viewModel.Event.Id))
                     {
                         return NotFound();
                     }
@@ -177,13 +185,13 @@ namespace BackendCapstone.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Details", "ClientPages", new { Id = viewModel.StoryBoard.ClientPageId });
+                return RedirectToAction(nameof(Index));
             }
-            
             return View(viewModel);
         }
+        
 
-        // GET: StoryBoards/Delete/5
+        // GET: Events/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -191,46 +199,39 @@ namespace BackendCapstone.Controllers
                 return NotFound();
             }
 
-            var storyBoard = await _context.StoryBoards
-                .Include(s => s.ClientPage)
-                .Include(s => s.User)
+            var @event = await _context.Events
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            var viewModel = new StoryBoardCreateEditViewModel()
-            {
-                StoryBoard = storyBoard
-            };
 
-            if (viewModel.StoryBoard == null)
+            if (@event == null)
             {
                 return NotFound();
             }
 
-            return View(viewModel);
+            return View(@event);
         }
 
-        // POST: StoryBoards/Delete/5
+        // POST: Events/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var storyBoard = await _context.StoryBoards.FindAsync(id);
-          
-            var currentFileName = storyBoard.ImgPath;
+            var @event = await _context.Events.FindAsync(id);
+            var currentFileName = @event.ImgPath;
             if (currentFileName != null)
-            { 
+            {
                 var images = Directory.GetFiles("wwwroot/images");
-                var fileToDelete = images.First(i => i.Contains(currentFileName));          
+                var fileToDelete = images.First(i => i.Contains(currentFileName));
                 System.IO.File.Delete(fileToDelete);
             }
-            _context.StoryBoards.Remove(storyBoard);
+            _context.Events.Remove(@event);
             await _context.SaveChangesAsync();
-            return RedirectToAction("Details", "ClientPages", new { Id = storyBoard.ClientPageId });
+            return RedirectToAction(nameof(Index));
         }
 
-        private bool StoryBoardExists(int id)
+        private bool EventExists(int id)
         {
-            return _context.StoryBoards.Any(e => e.Id == id);
+            return _context.Events.Any(e => e.Id == id);
         }
 
         private string GetUniqueFileName(string fileName)
