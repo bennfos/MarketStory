@@ -18,8 +18,8 @@
     @foreach (var item in Model)
     {
 
-        <div style="margin: 30px; width:270px; background-color:#CCCCCC; border-radius:3px;">
-            <a style="color:#345A6D; " asp-controller="ClientPages" asp-action="Details" asp-route-id="@item.Id">
+        <div style="margin: 30px; width:270px; background-color:#FAFAFA; border-radius: 4px;">
+            <a style="color:#345A6D; " asp-controller="Events" asp-action="Details" asp-route-id="@item.Id">
                 <div>
                     <img style="width:270px; height:250px;" asp-append-version="true" src="~/images/@item.ImgPath" />
                 </div>

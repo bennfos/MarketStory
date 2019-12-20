@@ -23,6 +23,7 @@ namespace BackendCapstone.Data
         public DbSet<StoryBoard> StoryBoards { get; set; }
         public DbSet<ClientPage> ClientPages { get; set; }
         public DbSet<Event> Events { get; set; }
+        public DbSet<EventUser> EventUsers { get; set; }
         public DbSet<ClientPageEvent> ClientPageEvents { get; set; }
         public DbSet<ClientPageUser> ClientPageUsers { get; set; }
         public DbSet<Task> Tasks { get; set; }

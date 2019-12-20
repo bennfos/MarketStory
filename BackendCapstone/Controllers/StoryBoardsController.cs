@@ -212,7 +212,7 @@ namespace BackendCapstone.Controllers
         // POST: StoryBoards/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id, StoryBoardCreateEditViewModel viewModel)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var storyBoard = await _context.StoryBoards.FindAsync(id);
           

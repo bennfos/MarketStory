@@ -21,6 +21,8 @@ namespace BackendCapstone.Controllers
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly UserManager<ApplicationUser> _userManager;
 
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
+
         public EventsController(UserManager<ApplicationUser> userManager, ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
         {
             _userManager = userManager;
@@ -42,14 +44,41 @@ namespace BackendCapstone.Controllers
                 return NotFound();
             }
 
-            var @event = await _context.Events
+            var @event = await _context.EventUsers
+                .Include(eu => eu.Event)
+                .Include(eu => eu.User)
+                .Select(eu => eu.Event)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
+            var attendees = await _context.EventUsers
+                .Where(eu => eu.EventId == @event.Id)
+                .Select(eu => eu.User)
+                .ToListAsync();
+
+            @event.Attendees = attendees;
+            
             if (@event == null)
             {
                 return NotFound();
             }
 
             return View(@event);
+        }
+
+        public async Task<IActionResult> RSVP(int id)
+        {
+            var user = await GetCurrentUserAsync();
+
+            var eventUser = new EventUser()
+            {
+                EventId = id,
+                UserId = user.Id
+            };
+
+            _context.Add(eventUser);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Details", new { Id = id });
         }
 
         // GET: Events/Create
@@ -87,6 +116,7 @@ namespace BackendCapstone.Controllers
             return View(viewModel);
         }
 
+
         // GET: Events/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -114,7 +144,7 @@ namespace BackendCapstone.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, EventCreateEditViewModel viewModel)
+        public async Task<IActionResult> Edit(EventCreateEditViewModel viewModel)
         {
             
             if (ModelState.IsValid)
@@ -171,6 +201,8 @@ namespace BackendCapstone.Controllers
 
             var @event = await _context.Events
                 .FirstOrDefaultAsync(m => m.Id == id);
+
+
             if (@event == null)
             {
                 return NotFound();
@@ -185,6 +217,13 @@ namespace BackendCapstone.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var @event = await _context.Events.FindAsync(id);
+            var currentFileName = @event.ImgPath;
+            if (currentFileName != null)
+            {
+                var images = Directory.GetFiles("wwwroot/images");
+                var fileToDelete = images.First(i => i.Contains(currentFileName));
+                System.IO.File.Delete(fileToDelete);
+            }
             _context.Events.Remove(@event);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
