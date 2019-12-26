@@ -20,7 +20,7 @@ connection.on("ReceiveApproval", function (storyBoardId) {
     alert("Approved!");
 });
 
-connection.on("CallerReceiveMessage", function (storyBoardId, userId, message) {
+connection.on("CallerReceiveMessage", function (storyBoardId, userId, message, timestamp) {
    var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
    var encodedMsg = msg;
     var div = document.createElement("div");
