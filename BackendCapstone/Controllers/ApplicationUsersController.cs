@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using BackendCapstone.Data;
 using BackendCapstone.Models;
 using BackendCapstone.Models.ApplicationUserViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -14,7 +15,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace BackendCapstone.Controllers
 {
-    []
+    [Authorize]
     public class ApplicationUsersController : Controller
     {
         private readonly IConfiguration _config;
