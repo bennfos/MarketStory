@@ -17,7 +17,6 @@ connection.on("ReceiveApproval", function (storyBoardId) {
     img.style.height = "30px";
     img.id = `approvalCheck--${storyBoardId}`
     document.getElementById(`approvalBox--${storyBoardId}`).appendChild(img);
-    alert("Approved!");
 });
 
 connection.on("CallerReceiveMessage", function (storyBoardId, userId, message, timestamp) {
