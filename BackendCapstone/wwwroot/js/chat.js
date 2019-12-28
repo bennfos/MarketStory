@@ -1,6 +1,7 @@
 ﻿
 "use strict";
 
+
 var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 
 //Disable send button until connection is established
@@ -21,7 +22,10 @@ connection.on("ReceiveApproval", function (storyBoardId) {
 
 connection.on("CallerReceiveMessage", function (storyBoardId, userId, message, timestamp) {
    var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-   var encodedMsg = msg;
+    var encodedMsg = msg;
+    var tsDiv = document.createElement("div")
+    tsDiv.textConent = timestamp
+    tsDiv.style.fontSize = "4px";
     var div = document.createElement("div");
     var pMessage = document.createElement("p")
     div.style.backgroundColor = "#1D9EF1";
@@ -37,6 +41,7 @@ connection.on("CallerReceiveMessage", function (storyBoardId, userId, message, t
     pMessage.style.margin = "5px";
     pMessage.textContent = encodedMsg;  
     div.appendChild(pMessage);
+    document.getElementById(`messagesList--${storyBoardId}`).appendChild(tsDiv);
     document.getElementById(`messagesList--${storyBoardId}`).appendChild(div);
     var input = document.getElementById(`messageInput--${storyBoardId}`);
     input.value = ""
