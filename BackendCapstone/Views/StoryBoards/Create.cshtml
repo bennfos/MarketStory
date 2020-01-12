@@ -13,20 +13,21 @@
         <form enctype="multipart/form-data" asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="StoryBoard.Text" class="control-label"></label>
-                <input asp-for="StoryBoard.Text" class="form-control" />
-                <span asp-validation-for="StoryBoard.Text" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="StoryBoard.PostDateTime" class="control-label"></label>
-                <input asp-for="StoryBoard.PostDateTime" class="form-control" />
-                <span asp-validation-for="StoryBoard.PostDateTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="Img"></label>
                 <input asp-for="Img" type="file">
                 <span asp-validation-for="Img"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="StoryBoard.Text" class="control-label"></label>
+                <textarea asp-for="StoryBoard.Text" class="form-control"></textarea>
+                <span asp-validation-for="StoryBoard.Text" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StoryBoard.PostDateTime" class="control-label"></label>
+                <input type="date" asp-for="StoryBoard.PostDateTime" class="form-control" />
+                <span asp-validation-for="StoryBoard.PostDateTime" class="text-danger"></span>
+            </div>
+
             <div class="form-group">
                 @Html.HiddenFor(m => m.StoryBoard.ClientPageId)
             </div>

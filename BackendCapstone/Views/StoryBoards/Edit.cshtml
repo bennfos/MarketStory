@@ -27,14 +27,14 @@
                 <span asp-validation-for="Img"></span>
             </div>
             <div class="form-group">
-                <label asp-for="StoryBoard.Text" class="control-label"></label>
-                <input asp-for="StoryBoard.Text" class="form-control" />
-                <span asp-validation-for="StoryBoard.Text" class="text-danger"></span>
+                <label asp-for="UpdatedText" class="control-label"></label>
+                <textarea asp-for="UpdatedText" class="form-control"></textarea>
+                <span asp-validation-for="UpdatedText" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="StoryBoard.PostDateTime" class="control-label"></label>
-                <input asp-for="StoryBoard.PostDateTime" class="form-control" />
-                <span asp-validation-for="StoryBoard.PostDateTime" class="text-danger"></span>
+                <label asp-for="UpdatedPostDateTime" class="control-label"></label>
+                <input type="date" asp-for="UpdatedPostDateTime" class="form-control" />
+                <span asp-validation-for="UpdatedPostDateTime" class="text-danger"></span>
             </div>
             <div class="form-group">
                 @Html.HiddenFor(m => m.StoryBoard.ImgPath)
@@ -44,6 +44,15 @@
             </div>
             <div class="form-group">
                 @Html.HiddenFor(m => m.StoryBoard.UserId)
+            </div>
+            <div class="form-group">
+                @Html.HiddenFor(m => m.StoryBoard.IsApproved)
+            </div>
+            <div class="form-group">
+                @Html.HiddenFor(m => m.StoryBoard.Text)
+            </div>
+            <div class="form-group">
+                @Html.HiddenFor(m => m.StoryBoard.PostDateTime)
             </div>
             <div class="form-group">
                 <input type="submit" asp-page-handler="Upload" value="Save" class="btn btn-primary" />

@@ -23,8 +23,8 @@
         {
             <div style="margin:10px 10px 10px 10px;">
                 <a asp-controller="ApplicationUsers" asp-action="MarketingUserDetails" asp-route-id="@item.Id">
-                    <div style="justify-content: center;">
-                        <img style="border:double 6px #FF4251; width:70px; height: 70px; border-radius: 50%;" src="~/images/@item.ImgPath" asp-append-version="true" />
+                    <div style="display:flex; flex-direction: column;">
+                        <img style="align-self: center; border:double 6px #FF4251; width:70px; height: 70px; border-radius: 50%;" src="~/images/@item.ImgPath" asp-append-version="true" />
                         <p>@item.FirstName @item.LastName</p>
                     </div>
                 </a>
