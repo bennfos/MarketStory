@@ -44,26 +44,31 @@
 }
 
 <div style="display: flex; flex-direction: row; justify-content: flex-start;">
-    <div id="storyBoardsList" style="display: flex; flex-direction: row; justify-self: flex-end; flex-wrap:wrap;">
+    <div id="storyBoardsList" style="display: flex; flex-direction: row; justify-self: flex-end; flex-wrap:wrap; background-color:#F2F2F2;">
+
+        @*  Use for loop to render unique form elements and ids for each StoryBoard. *@
         @for (int i = 0; i < Model.ClientPage.StoryBoards.Count; i++)
         {
-            <div style="display: flex; flex-direction: row; margin: 30px 22px; height:auto; width:1000px; border:1px solid #E6E6E6; background-color:#FDFDFD; border-radius:5px;">
+            @*  StoryBoard and Chat container *@
+            <div style="display: flex; flex-direction: row; margin: 30px 22px; height:auto; width:1000px; border:1px solid #E6E6E6; background-color:#FCFCFC; border-radius:5px;"2>
 
+                @*  StoryBoard *@
+                <div style="margin: 30px 22px; width:320px; height:auto; border:1px solid #E6E6E6; background-color:#FAFAFA; border-radius:5px;">
 
-                <div style="margin: 30px 22px; width:320px; height:auto; border:1px solid #E6E6E6; background-color:#FDFDFD; border-radius:5px;">
+                    @*  StoryBoard Header *@
                     <div style="display: flex; flex-direction: row; justify-content: flex-end;">
                         <p style="margin: 10px 0 0 0">
                             <em>@Model.ClientPage.StoryBoards[i].PostDateTime</em>
                         </p>
-                        <div id="approvalBox--@Model.ClientPage.StoryBoards[i].Id" style="width: 30px; height: 30px; border: solid 1px #BBBBBB; border-radius: 4px; margin: 10px 10px 0 10px; display: flex;">
+                        <div id="approvalBox--@Model.ClientPage.StoryBoards[i].Id" style="width: 30px; background-color:#FEFEFE; height: 30px; border: solid 1px #E6E6E6; border-radius: 4px; margin: 10px 10px 0 10px; display: flex;">
                             @if (Model.ClientPage.StoryBoards[i].IsApproved == true)
                             {
                                 <img id="approvalCheck--@Model.ClientPage.StoryBoards[i].Id" style="justify-content: center; width: 30px; height: 30px;" src="~/images/checkmark.png" />
                             }
                         </div>
-
-
                     </div>
+
+                    @*  StoryBoard Body *@
                     <div style="margin:10px; display:flex; align-items:center; flex-direction:row; height:40px; padding: 16px;">
                         <img style="margin: 10px; border:double 3px #FF4251; width:35px; height: 35px; border-radius: 50%;" src="~/images/@Model.ClientPage.ImgPath" asp-append-version="true" />
                         <p><strong>@Model.ClientPage.Name</strong></p>
@@ -76,6 +81,8 @@
                             <strong>@Model.ClientPage.Name</strong>&nbsp;@Model.ClientPage.StoryBoards[i].Text
                         </p>
                     </div>
+
+                    @*  Client users cannot edit or delete *@
                     @if (user.UserTypeId != 3)
                     {
                         <div style="display: flex; align-content:center; justify-content: center;">

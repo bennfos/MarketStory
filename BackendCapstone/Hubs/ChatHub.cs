@@ -42,20 +42,22 @@ namespace BackendCapstone.Hubs
                 .Select(c => c.User)
                 .FirstOrDefaultAsync();
 
+            var timestamp = chat.Timestamp;
+
             var otherChatUserName = $"{chatUser.FirstName} {chatUser.LastName}";
 
-            await Clients.Others.SendAsync("OthersReceiveMessage", storyBoardId, userId, otherChatUserName, message);
-            await Clients.Caller.SendAsync("CallerReceiveMessage", storyBoardId, userId, message);
+            await Clients.Others.SendAsync("OthersReceiveMessage", storyBoardId, userId, otherChatUserName, message, timestamp);
+            await Clients.Caller.SendAsync("CallerReceiveMessage", storyBoardId, userId, message, timestamp);
             
         }
 
-        
 
         public async System.Threading.Tasks.Task SendApproval(string storyBoardId)
         {
             var storyBoard = await _context.StoryBoards
                 .Where(sb => sb.Id == int.Parse(storyBoardId))
                 .FirstOrDefaultAsync();
+
             if (storyBoard.IsApproved == false)
             {
                 storyBoard.IsApproved = true;

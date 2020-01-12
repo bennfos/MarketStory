@@ -119,7 +119,9 @@ namespace BackendCapstone.Controllers
                 .FirstOrDefaultAsync();
             var viewModel = new StoryBoardCreateEditViewModel()
             {
-                StoryBoard = storyBoard
+                StoryBoard = storyBoard,
+                UpdatedText = storyBoard.Text,
+                UpdatedPostDateTime = storyBoard.PostDateTime
             };
             if (storyBoard == null)
             {
@@ -145,15 +147,29 @@ namespace BackendCapstone.Controllers
             {
                 try
                 {
+
                     var currentFileName = viewModel.StoryBoard.ImgPath;
+                    var currentPostDateTime = viewModel.StoryBoard.PostDateTime;
+                    var currentText = viewModel.StoryBoard.Text;
+
+                    // if the text or postDateTime values have changed, update them AND remove approval from story
+                    if (currentPostDateTime != viewModel.UpdatedPostDateTime || currentText != viewModel.UpdatedText)
+                    {
+                        viewModel.StoryBoard.Text = viewModel.UpdatedText;
+                        viewModel.StoryBoard.PostDateTime = viewModel.UpdatedPostDateTime;
+                        viewModel.StoryBoard.IsApproved = false;
+                    }
+                    // if an image has been uploaded AND the new image file name is not the same as the current file name (i.e., it changed), edit the image
                     if (viewModel.Img != null && viewModel.Img.FileName != currentFileName)
                     {
+                        //if the story already had an image file associated with it, delete the old image from wwwroot/images directory...
                         if (currentFileName != null)
                         {                      
                             var images = Directory.GetFiles("wwwroot/images");
                             var fileToDelete = images.First(i => i.Contains(currentFileName));
                             System.IO.File.Delete(fileToDelete);
-                        }                    
+                        }      
+                        //append GUID to end of new file name and save file to wwwroot/images directory
                         var uniqueFileName = GetUniqueFileName(viewModel.Img.FileName);
                         var imageDirectory = Path.Combine(_webHostEnvironment.WebRootPath, "images");
                         var filePath = Path.Combine(imageDirectory, uniqueFileName);
@@ -163,6 +179,7 @@ namespace BackendCapstone.Controllers
                         }
                         viewModel.StoryBoard.ImgPath = uniqueFileName;
                     }
+                    //then save StoryBoard with updated data data to database
                     _context.Update(viewModel.StoryBoard);
                     await _context.SaveChangesAsync();
                 }

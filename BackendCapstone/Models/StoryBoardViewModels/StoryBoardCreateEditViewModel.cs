@@ -10,6 +10,10 @@ namespace BackendCapstone.Models.StoryBoardViewModels
     {
         public StoryBoard StoryBoard { get; set; }
 
+        public string UpdatedText { get; set; }
+
+        public DateTime UpdatedPostDateTime { get; set; }
+
         public IFormFile Img { get; set; }
     }
 }
