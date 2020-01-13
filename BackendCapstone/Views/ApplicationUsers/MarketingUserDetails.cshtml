@@ -1,4 +1,7 @@
 ﻿@model BackendCapstone.Models.ApplicationUserViewModels.MarketingUserDetailsViewModel
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@{var user = await UserManager.GetUserAsync(User);}
 
 @{
     ViewData["Title"] = "MarketingUserDetails";
@@ -18,7 +21,7 @@
 </div>
 <div>
     <h3>Upcoming Stories</h3>
-    <hr/>
+    <hr />
     <div id="storyBoardsList" style="display: flex; flex-direction: row; justify-self: flex-end; flex-wrap:wrap;">
 
         @*  Use for loop to render unique form elements and ids for each StoryBoard. *@
@@ -65,33 +68,33 @@
         }
     </div>
     <hr />
-    
-        <h3>Client Pages</h3>
-        <div style="display: flex; flex-direction: row; justify-self: flex-end; flex-wrap: wrap;">
-            @foreach (var item in Model.ClientPageUsers)
-            {
 
-                <div style="margin: 20px; width:auto; height:287px; background-color:#FAFAFA; border-radius:3px;">
-                    <a style="color:#345A6D; " asp-controller="ClientPages" asp-action="Details" asp-route-id="@item.ClientPage.Id">
-                        <div>
-                            <img style="border-radius:4px 4px 0 0; width:268px; height:250px;" asp-append-version="true" src="~/images/@item.ClientPage.ImgPath" />
-                        </div>
-                        <div class="clientPage__card__name" style="justify-content: center;">
-                            <h5>
-                                @Html.DisplayFor(modelItem => item.ClientPage.Name)
-                            </h5>
-                        </div>
-                    </a>
-                    @if (Model.User.UserTypeId == 1)
-                    {
-                        <div style="display: flex; align-content:center; justify-content: center;">
-                            <a asp-action="UnassignClientPage" asp-route-id=@item.Id>Unassign</a>
-                        </div>
-                    }
-                </div>
-            }
-        </div>
+    <h3>Client Pages</h3>
+    <div style="display: flex; flex-direction: row; justify-self: flex-end; flex-wrap: wrap;">
+        @foreach (var item in Model.ClientPageUsers)
+        {
+
+            <div style="margin: 20px; width:auto; height:287px; background-color:#FAFAFA; border-radius:3px;">
+                <a style="color:#345A6D; " asp-controller="ClientPages" asp-action="Details" asp-route-id="@item.ClientPage.Id">
+                    <div>
+                        <img style="border-radius:4px 4px 0 0; width:268px; height:250px;" asp-append-version="true" src="~/images/@item.ClientPage.ImgPath" />
+                    </div>
+                    <div class="clientPage__card__name" style="justify-content: center;">
+                        <h5>
+                            @Html.DisplayFor(modelItem => item.ClientPage.Name)
+                        </h5>
+                    </div>
+                </a>
+                @if (user.UserTypeId == 1)
+                {
+                    <div style="display: flex; align-content:center; justify-content: center;">
+                        <a asp-action="UnassignClientPage" asp-route-id=@item.Id>Unassign</a>
+                    </div>
+                }
+            </div>
+        }
     </div>
-    <div>
-        <a asp-controller="Home" asp-action="AdminHome">Back to Dashboard</a>
-    </div>
+</div>
+<div>
+    <a asp-controller="Home" asp-action="AdminHome">Back to Dashboard</a>
+</div>

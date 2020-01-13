@@ -14,8 +14,10 @@ namespace BackendCapstone.Models.ClientPageViewModels
 
         public List<ApplicationUser> ClientUsers { get; set; }
 
+        [Display(Name = "Client User")]
         public string ClientUserId { get; set; }
 
+        [Display(Name = "Assign Client User")]
         public List<SelectListItem> ClientUserOptions { get; set; }
 
         [Display(Name = "Profile Image")]

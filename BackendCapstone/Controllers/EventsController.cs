@@ -90,6 +90,20 @@ namespace BackendCapstone.Controllers
             return RedirectToAction("Details", new { Id = id });
         }
 
+        public async Task<IActionResult> CancelAttend(int id)
+        {
+            var user = await GetCurrentUserAsync();
+
+            var eventUser = await _context.EventUsers
+                .Where(eu => eu.UserId == user.Id && eu.EventId == id)
+                .FirstOrDefaultAsync();
+
+            _context.Remove(eventUser);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Details", new { Id = id });
+        }
+
         // GET: Events/Create
         public IActionResult Create()
         {

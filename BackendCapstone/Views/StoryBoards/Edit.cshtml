@@ -13,14 +13,14 @@
     <img style="width:40px; height: 40px; border-radius: 50%;" src="~/images/@Model.StoryBoard.User.ImgPath" asp-append-version="true" />
     <p style="margin:8px;"><strong>@Model.StoryBoard.User.FirstName @Model.StoryBoard.User.LastName</strong></p>
 </div>
-<div class="row">
-    <div class="col-md-4">
-        <form enctype="multipart/form-data" asp-action="Edit">
+<div class="row ">
+    <div class="col-md-4 editContainer">
+        <div>
+            <img style="width:317px; height:280px;" asp-append-version="true" src="~/images/@Model.StoryBoard.ImgPath" />
+        </div>
+        <form enctype="multipart/form-data" asp-action="Edit" class="editForm">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="StoryBoard.Id" />
-            <div>
-                <img style="width:317px; height:280px;" asp-append-version="true" src="~/images/@Model.StoryBoard.ImgPath" />
-            </div>
             <div class="form-group">
                 <label asp-for="Img"></label>
                 <input asp-for="Img" type="file">
