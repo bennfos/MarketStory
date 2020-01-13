@@ -12,7 +12,7 @@ a.navbar-brand {
 
 /* Provide sufficient contrast against white background */
 a {
-  color: #0366d6;
+    color: #254150;
 }
 
 .btn-primary {
@@ -116,6 +116,8 @@ body {
 }
 
 .userColumn {
+    display: flex;
+    flex-direction: column;
     margin: 10px;
 }
 
@@ -269,6 +271,7 @@ body {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
+    align-items:center;
 }
 
 .approvalBox {
@@ -366,7 +369,7 @@ body {
     width: 525px;
 }
 
-.repDashConatiner {
+.repDashContainer {
     width: 1100px;
     display: flex;
     flex-direction: row;
@@ -388,6 +391,19 @@ body {
     width: 70px;
     height: 70px;
     border-radius: 50%;
+}
+
+.repUserEditContainer {
+    width: 500px;
+    display: flex;
+    align-self: center;
+    justify-content: flex-end;
+}
+
+.repUserEdit {
+    align-items: center;
+    display: flex;
+    justify-content: flex-end;
 }
 
 .repStoryContainer {
@@ -467,6 +483,28 @@ body {
 
 .editForm {
     margin: 20px;
+}
+
+.storyEditUserContainer {
+    margin: 8px 0; 
+    display:flex; 
+    flex-direction:row; 
+    align-items:center;
+}
+
+.storyEditUserImg {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.createdBy {
+    margin: 8px 8px 8px 25px;
+}
+
+.editImg {
+    width: 300px;
+    height: 315px;
 }
 
 h1 {

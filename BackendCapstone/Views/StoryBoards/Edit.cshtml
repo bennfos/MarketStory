@@ -8,15 +8,15 @@
 
 <h4>StoryBoard</h4>
 <hr />
-<div style="margin: 8px 0; display:flex; flex-direction:row; align-items:center;">
-    <p style="margin: 8px 8px 8px 25px;"> Created by: </p>
-    <img style="width:40px; height: 40px; border-radius: 50%;" src="~/images/@Model.StoryBoard.User.ImgPath" asp-append-version="true" />
+<div class="storyEditUserContainer">
+    <p class="createdBy"> Created by: </p>
+    <img class="storyEditUserImg" src="~/images/@Model.StoryBoard.User.ImgPath" asp-append-version="true" />
     <p style="margin:8px;"><strong>@Model.StoryBoard.User.FirstName @Model.StoryBoard.User.LastName</strong></p>
 </div>
 <div class="row ">
     <div class="col-md-4 editContainer">
         <div>
-            <img style="width:317px; height:280px;" asp-append-version="true" src="~/images/@Model.StoryBoard.ImgPath" />
+            <img class="storyBoardImg" asp-append-version="true" src="~/images/@Model.StoryBoard.ImgPath" />
         </div>
         <form enctype="multipart/form-data" asp-action="Edit" class="editForm">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>

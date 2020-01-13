@@ -10,9 +10,9 @@
 <hr />
 <div class="row">
     <div class="col-md-4 editContainer">
-     <div style="margin: 0 15px 0 0;">
-        <img style="width:300px; height:315px;" asp-append-version="true" src="~/images/@Model.ClientPage.ImgPath" />
-    </div>
+        <div style="margin: 0 15px 0 0;">
+            <img class="editImg" asp-append-version="true" src="~/images/@Model.ClientPage.ImgPath" />
+        </div>
         <form asp-action="Edit" enctype="multipart/form-data" class="editForm">
             <div class="flex-row">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>

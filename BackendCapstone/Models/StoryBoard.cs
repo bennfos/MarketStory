@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,6 +13,8 @@ namespace BackendCapstone.Models
         public string Text { get; set; }
         public string ImgPath { get; set; }
         public DateTime Timestamp { get; set; }
+
+        [Display(Name = "Post Date")]
         public DateTime PostDateTime { get; set; }
         public bool IsApproved { get; set; }
         public int ClientPageId { get; set; }
