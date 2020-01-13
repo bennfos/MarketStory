@@ -45,6 +45,7 @@ connection.on("CallerReceiveMessage", function (storyBoardId, userId, message, t
     document.getElementById(`messagesList--${storyBoardId}`).appendChild(div);
     var input = document.getElementById(`messageInput--${storyBoardId}`);
     input.value = ""
+    document.getElementById(`messagesList--${storyBoardId}`).scrollTop = document.getElementById(`messagesList--${storyBoardId}`).scrollHeight;
 });
 
 

@@ -14,42 +14,71 @@
         <a asp-action="Create">Create New</a>
     </p>
 }
+
 <div class="eventCardsContainer">
+
     @foreach (var item in Model)
     {
+        if (user.UserTypeId != 3)
+        {
 
-        <div class="eventCard">
-            <a class="clientPageCardLink " asp-controller="Events" asp-action="Details" asp-route-id="@item.Id">
-                <div>
-                    <img class="eventCardImg" asp-append-version="true" src="~/images/@item.ImgPath" />
-                </div>
-                <div>
-                    <div class="eventCardName">
-                        <h4>
-                            @item.Name
-                        </h4>
+            <div class="eventCard">
+                <a class="clientPageCardLink " asp-controller="Events" asp-action="Details" asp-route-id="@item.Id">
+                    <div>
+                        <img class="eventCardImg" asp-append-version="true" src="~/images/@item.ImgPath" />
                     </div>
-                    <div style="margin: 10px;">
-                        <h6>
-                            @item.Description
-                        </h6>
-                        <p>
-                            @item.Location
-                        </p>
-                        <p>
-                            @item.DateTime
-                        </p>
+                    <div>
+                        <div class="eventCardName">
+                            <h4>
+                                @item.Name
+                            </h4>
+                        </div>
+                        <div style="margin: 10px;">
+                            <h6>
+                                @item.Description
+                            </h6>
+                            <p>
+                                @item.Location
+                            </p>
+                            <p>
+                                @item.DateTime
+                            </p>
+                        </div>
                     </div>
-                </div>
-            </a>
-            @if (user.UserTypeId != 3)
-            {
+                </a>
                 <div class="editDeleteContainer">
                     <a asp-route-id=@item.Id asp-controller="Events" asp-action="Edit">Edit</a>&nbsp;|&nbsp;
                     <a asp-route-id=@item.Id asp-controller="Events" asp-action="Delete">Delete</a>
                 </div>
-            }
-        </div>
-
+            </div>
+        }
+        else if (user.UserTypeId == 3 && item.IsClosed == false)
+        {
+            <div class="eventCard">
+                <a class="clientPageCardLink " asp-controller="Events" asp-action="Details" asp-route-id="@item.Id">
+                    <div>
+                        <img class="eventCardImg" asp-append-version="true" src="~/images/@item.ImgPath" />
+                    </div>
+                    <div>
+                        <div class="eventCardName">
+                            <h4>
+                                @item.Name
+                            </h4>
+                        </div>
+                        <div style="margin: 10px;">
+                            <h6>
+                                @item.Description
+                            </h6>
+                            <p>
+                                @item.Location
+                            </p>
+                            <p>
+                                @item.DateTime
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
     }
 </div>
