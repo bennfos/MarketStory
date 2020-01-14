@@ -4,6 +4,9 @@
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 
+var messageBoxes = document.getElementsByClassName('chatList')
+messageBoxes.scrollTop = messageBoxes.scrollHeight
+
 //Disable send button until connection is established
 
 connection.on("RemoveApproval", function (storyBoardId) {
@@ -28,6 +31,8 @@ connection.on("CallerReceiveMessage", function (storyBoardId, userId, message, t
     tsDiv.style.fontSize = "4px";
     var div = document.createElement("div");
     var pMessage = document.createElement("p")
+    var messageList = document.getElementById(`messagesList--${storyBoardId}`)
+    var input = document.getElementById(`messageInput--${storyBoardId}`);
     div.style.backgroundColor = "#1D9EF1";
     div.style.color = "#FFFFFF";
     div.style.maxWidth = "350px";
@@ -41,9 +46,9 @@ connection.on("CallerReceiveMessage", function (storyBoardId, userId, message, t
     pMessage.style.margin = "5px";
     pMessage.textContent = encodedMsg;  
     div.appendChild(pMessage);
-    document.getElementById(`messagesList--${storyBoardId}`).appendChild(tsDiv);
-    document.getElementById(`messagesList--${storyBoardId}`).appendChild(div);
-    var input = document.getElementById(`messageInput--${storyBoardId}`);
+    messageList.appendChild(tsDiv);
+    messageList.appendChild(div);
+    messageList.scrollTop = messageList.scrollHeight;
     input.value = ""
 });
 
@@ -55,6 +60,8 @@ connection.on("OthersReceiveMessage", function (storyBoardId, userId, userName, 
     var div = document.createElement("div");
     var pUser = document.createElement("p");
     var pMessage = document.createElement("p")
+    var messageList = document.getElementById(`messagesList--${storyBoardId}`)
+    var input = document.getElementById(`messageInput--${storyBoardId}`);
     div.style.backgroundColor = "#EEEEEE";   
     div.style.maxWidth = "350px";
     div.style.minWidth = "15px";
@@ -71,8 +78,8 @@ connection.on("OthersReceiveMessage", function (storyBoardId, userId, userName, 
     pMessage.textContent = encodedMsg;
     div.appendChild(pUser);
     div.appendChild(pMessage);
-    document.getElementById(`messagesList--${storyBoardId}`).appendChild(div);
-    var input = document.getElementById(`messageInput--${storyBoardId}`);
+    messageList.appendChild(div);
+    messageList.scrollTop = messageList.scrollHeight;
     input.value = ""
 });
 

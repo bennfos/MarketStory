@@ -6,46 +6,46 @@
 
 <h1>Admin Dashboard</h1>
 
-<div style="display: flex; flex-direction: row; justify-content: flex-start;">
-    <div style="margin: 30px 10px 0 0; display: flex; flex-direction: column;">
+<div class="dashContainer">
+    <div class="dashUserColumn">
         @foreach (var item in Model.Reps)
         {
-            <div style="margin:10px 10px 10px 10px;">
-                <a asp-controller="ApplicationUsers" asp-action="Details" asp-route-id="@item.Id">
-                    <div style="display: flex; flex-direction: column;">
-                        <img style="align-self: center; border:double 6px #345A6D; width:70px; height: 70px; border-radius: 50%;" src="~/images/@item.ImgPath" asp-append-version="true" />
-                        <p style="align-self:center;">@item.FirstName @item.LastName</p>
+            <div class="userColumn">
+                <a class="clientPageCardLink" asp-controller="ApplicationUsers" asp-action="Details" asp-route-id="@item.Id">
+                    <div class="userContainer">
+                        <img class="userImg repImg" src="~/images/@item.ImgPath" asp-append-version="true" />
+                        <p>@item.FirstName @item.LastName</p>
                     </div>
                 </a>
             </div>
         }
         @foreach (var item in Model.Admins)
         {
-            <div style="margin:10px 10px 10px 10px;">
-                <a asp-controller="ApplicationUsers" asp-action="MarketingUserDetails" asp-route-id="@item.Id">
-                    <div style="display:flex; flex-direction: column;">
-                        <img style="align-self: center; border:double 6px #FF4251; width:70px; height: 70px; border-radius: 50%;" src="~/images/@item.ImgPath" asp-append-version="true" />
+            <div class="userColumn">
+                <a class="clientPageCardLink" asp-controller="ApplicationUsers" asp-action="MarketingUserDetails" asp-route-id="@item.Id">
+                    <div class="userContainer">
+                        <img class="userImg adminImg" src="~/images/@item.ImgPath" asp-append-version="true" />
                         <p>@item.FirstName @item.LastName</p>
                     </div>
                 </a>
             </div>
         }
     </div>
-   <div style="display: flex; flex-direction: row; justify-self: flex-end; flex-wrap: wrap;">
+   <div class="clientPagesContainer">
         @foreach (var item in Model.ClientPages) {
         
-            <div style="margin: 15px; width:270px; height:287px; background-color:#FAFAFA; border-radius:4px 4px 0 0;">
-                <a style="color:#345A6D; " asp-controller="ClientPages" asp-action="Details" asp-route-id="@item.Id">
+            <div class="clientPageCard">
+                <a class="clientPageLink" asp-controller="ClientPages" asp-action="Details" asp-route-id="@item.Id">
                     <div>
-                        <img style="width:268px; height:250px; border-radius:4px 0;" asp-append-version="true" src="~/images/@item.ImgPath"/>
+                        <img class="clientPageCardImg" asp-append-version="true" src="~/images/@item.ImgPath"/>
                     </div>
-                    <div class="clientPage__card__name" style="justify-content: center;">
+                    <div class="clientPageCardName">
                         <h5>
                             @Html.DisplayFor(modelItem => item.Name)
                         </h5>
                     </div>
                 </a>
-                <div style="display: flex; align-content:center; justify-content: center;">
+                <div class="editDeleteContainer">
                     <a asp-route-id=@item.Id asp-controller="ClientPages" asp-action="Edit">Edit</a>&nbsp;|&nbsp;
                     <a asp-route-id=@item.Id asp-controller="ClientPages" asp-action="Delete">Delete</a>
                 </div>

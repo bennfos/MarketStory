@@ -12,7 +12,7 @@ a.navbar-brand {
 
 /* Provide sufficient contrast against white background */
 a {
-  color: #0366d6;
+    color: #254150;
 }
 
 .btn-primary {
@@ -67,7 +67,9 @@ body {
     background-color: #F2F2F2;
 }
 
-
+.container {
+    width:100%;
+}
 
 
 .footer {
@@ -78,3 +80,437 @@ body {
   line-height: 60px; /* Vertically center the text there */
 }
 
+.userImg {
+    align-self: center;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+}
+
+.userContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.repImg {
+    border: double 6px #345A6D;
+}
+
+.adminImg {
+    border: double 6px #FF4251;
+}
+
+.dashContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    width:100%;
+}
+
+.dashUserColumn {
+    align-items: center;
+    margin: 15px 5px 0 0; 
+    display: flex; 
+    flex-direction: column;
+}
+
+.userColumn {
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+}
+
+.clientPagesContainer {
+    margin:10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+
+.clientPageCard {
+    margin: 15px 20px 15px 30px;
+    width: 270px;
+    height: 280px;
+    background-color: #FAFAFA;
+    border-radius: 4px 4px 0 0;
+}
+
+.clientPageCardLink {
+    color: #345A6D;
+}
+
+.clientPageCardImg {
+    width: 268px;
+    height: 250px;
+    border-radius: 4px 0;
+}
+
+.clientPageCardName {
+    justify-content: center;
+}
+
+.editDeleteContainer {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+}
+
+.clientHomeName {
+    width:50%;
+    align-self:center;
+}
+
+.clientHomeUsers {
+    width: 50%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.storyBoardCardsContainer {
+    display: flex;
+    overflow-x: scroll   
+}
+
+.storyBoardCards {
+    display: flex;
+    flex-direction: row;
+    justify-self: flex-end;
+    flex-wrap: wrap;
+}
+
+.storyBoardCard {
+    margin: 30px 22px;
+    width: 320px;
+    border: 1px solid #E6E6E6;
+    background-color: #FAFAFA;
+    border-radius: 4px;
+}
+
+.storyBoardCardHeader {
+    margin: 10px;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    height: 40px;
+    padding: 16px;
+}
+
+.storyBoardCardClientImg {
+    margin: 10px;
+    border: double 3px #FF4251;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+}
+
+.storyBoardCardImg {
+    width: 317px;
+    height: 280px;
+    border-radius: 4px 4px 0 0;
+}
+
+.storyBoardCardBody {
+    height: auto;
+}
+
+.displayFlex--row {
+    display: flex;
+    flex-direction: row;
+}
+
+.clientPageDetailsUser {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.storyBoardsContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+.storyBoards {
+    display: flex;
+    flex-direction: row;
+    justify-self: flex-end;
+    flex-wrap: wrap;
+    background-color: #F2F2F2;
+}
+
+.storyBoardContainer {
+    display: flex;
+    flex-direction: row;
+    margin: 30px 22px;
+    height: auto;
+    width: 1000px;
+    border: 1px solid #E6E6E6;
+    background-color: #FCFCFC;
+    border-radius: 5px;
+}
+
+.storyBoard {
+    margin: 30px 22px;
+    width: 320px;
+    height: auto;
+    border: 1px solid #E6E6E6;
+    background-color: #FAFAFA;
+    border-radius: 5px;
+}
+
+.storyBoardHeader {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.storyBoardClientInfo {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items:center;
+}
+
+.approvalBox {
+    width: 30px;
+    background-color: #FEFEFE;
+    height: 30px;
+    border: solid 1px #E6E6E6;
+    border-radius: 4px;
+    margin: 10px 10px 0 10px;
+    display: flex;
+}
+
+.approvalCheckImg {
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+}
+
+.storyBoardHeader {
+    margin: 10px;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    height: 40px;
+    padding: 16px;
+}
+
+.storyBoardClientImg {
+    margin: 10px;
+    border: double 3px #FF4251;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+}
+
+.storyBoardImg {
+    width: 317px;
+    height: 280px;
+}
+
+.storyBoardChatContainer {
+    display: flex;
+    width: 680px;
+    height: 550px
+}
+
+.storyBoardChat {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 615px;
+    overflow-y: auto
+}
+
+.chatList {
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    margin: 20px 10px 70px 10px;
+    overflow-y: auto;
+}
+
+.userChat {
+    color: #FFFFFF;
+    background-color: #1D9EF1;
+    border-radius: 8px;
+    margin: 10px;
+    display: flex;
+    align-self: flex-end;
+    flex-direction: row;
+    min-width: 15px;
+    max-width: 350px;
+    padding: 8px;
+}
+
+.otherUserChat {
+    background-color: #EEEEEE;
+    border-radius: 8px;
+    margin: 10px;
+    display: flex;
+    align-self: flex-start;
+    flex-direction: row;
+    max-width: 350px;
+    padding: 8px;
+}
+
+.chatInputContainer {
+    display: flex;
+    position: absolute;
+    bottom: 15px;
+}
+
+.chatInput {
+    border-radius: 5px;
+    width: 525px;
+}
+
+.repDashContainer {
+    width: 1100px;
+    display: flex;
+    flex-direction: row;
+}
+
+.repDashHeader {
+    width: 500px;
+    align-items: flex-start;
+}
+
+.repUserContainer {
+    display: flex;
+    border-radius: 5px;
+    flex-direction: row;
+    align-items: center;
+}
+
+.repUserImg {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+}
+
+.repUserEditContainer {
+    width: 500px;
+    display: flex;
+    align-self: center;
+    justify-content: flex-end;
+}
+
+.repUserEdit {
+    align-items: center;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.repStoryContainer {
+    display: flex;
+    flex-direction: row;
+    margin: 20px 10px;
+    height: auto;
+}
+
+.repStory {
+    margin: 20px 15px;
+    width: 320px;
+    height: auto;
+    border: 1px solid #E6E6E6;
+    background-color: #FDFDFD;
+    border-radius: 5px;
+}
+
+.repStoryHeader {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.repStoryClient {
+    margin: 10px;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    height: 40px;
+    padding: 16px;
+}
+
+.repStoryClientImg {
+    margin: 10px;
+    border: double 3px #FF4251;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+}
+
+.repStoryImg {
+    width: 317px;
+    height: 280px;
+}
+
+.eventCardsContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+
+.eventCard {
+    margin: 30px;
+    width: 270px;
+    background-color: #FAFAFA;
+    border-radius: 4px;
+}
+
+.eventCardImg {
+    width: 270px;
+    height: 250px;
+}
+
+.eventCardName {
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.editContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.editForm {
+    margin: 20px;
+}
+
+.storyEditUserContainer {
+    margin: 8px 0; 
+    display:flex; 
+    flex-direction:row; 
+    align-items:center;
+}
+
+.storyEditUserImg {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.createdBy {
+    margin: 8px 8px 8px 25px;
+}
+
+.editImg {
+    width: 300px;
+    height: 315px;
+}
+
+h1 {
+    margin: 15px 40px
+}
+
+.create {
+    margin: 0 0 0 50px;
+}

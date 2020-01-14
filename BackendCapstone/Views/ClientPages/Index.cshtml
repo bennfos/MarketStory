@@ -11,20 +11,20 @@
 <h1>Client Pages</h1>
 @if (user.UserTypeId == 1)
 { 
-    <p>
+    <p class="create">
         <a asp-action="Create">Create New</a>
     </p>
 }
-<div style="display: flex; flex-direction: row; justify-self: flex-end; flex-wrap: wrap;">
+<div class=clientPagesContainer>
     @foreach (var item in Model)
     {
 
-     <div style="margin: 30px; width:270px; height:287px; background-color:lightgray; border-radius:3px;">
-        <a style="color:#345A6D; " asp-controller="ClientPages" asp-action="Details" asp-route-id="@item.Id">
+     <div class="clientPageCard">
+        <a class="clientPageCardLink" asp-controller="ClientPages" asp-action="Details" asp-route-id="@item.Id">
             <div>
-                <img style="width:270px; height:250px;" asp-append-version="true" src="~/images/@item.ImgPath" />
+                <img class="clientPageCardImg" asp-append-version="true" src="~/images/@item.ImgPath" />
             </div>
-            <div style="margin: 10px; justify-content: center;">
+            <div class="clientPageCardName">
                 <h5>
                     @Html.DisplayFor(modelItem => item.Name)
                 </h5>
@@ -32,7 +32,7 @@
         </a>
         @if (user.UserTypeId == 1)
         {
-            <div style="display: flex; align-content:center; justify-content: center;">
+            <div class="editDeleteContainer">
                 <a asp-route-id=@item.Id asp-controller="ClientPages" asp-action="Edit">Edit</a>&nbsp;|&nbsp;
                 <a asp-route-id=@item.Id asp-controller="ClientPages" asp-action="Delete">Delete</a>
             </div>

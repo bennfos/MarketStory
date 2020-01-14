@@ -6,10 +6,10 @@
 
 <h1>Dashboard</h1>
 <hr/>
-<div style="width:1100px; display: flex; flex-direction: row;">
-    <div style="width:500px; align-items:flex-start;">
-        <div style="display:flex; border-radius: 5px; flex-direction:row; align-items:center;">
-            <img style="width:70px; height: 70px; border-radius: 50%;" src="~/images/@Model.User.ImgPath" asp-append-version="true" />
+<div class="repDashContainer">
+    <div class="repDashHeader">
+        <div class="repUserContainer">
+            <img class="repUserImg" src="~/images/@Model.User.ImgPath" asp-append-version="true" />
             <h1 style="margin: 0 15px;">@Model.User.FirstName @Model.User.LastName</h1>
         </div>
     </div>    
@@ -17,44 +17,44 @@
 
 <div>
     <h3>Upcoming Stories</h3>
-    <div id="storyBoardsList" style="display: flex; flex-direction: row; justify-self: flex-end; flex-wrap:wrap;">
+    <div id="storyBoardsList" class="storyBoardCardsContainer">
 
         @*  Use for loop to render unique form elements and ids for each StoryBoard. *@
         @foreach (var item in Model.StoryBoards)
         {
-            @*  StoryBoard and Chat container *@
-            <div style="display: flex; flex-direction: row; margin: 30px 22px; height:auto;">
+            @*  StoryBoard container *@
+            <div class="repStoryContainer">
 
                 @*  StoryBoard *@
-                <div style="margin: 30px 22px; width:320px; height:auto; border:1px solid #E6E6E6; background-color:#FDFDFD; border-radius:5px;">
+                <div class="repStory">
 
                     @*  StoryBoard Header *@
-                    <div style="display: flex; flex-direction: row; justify-content: flex-end;">
+                    <div class="repStoryHeader">
                         <p style="margin: 10px 0 0 0">
                             <em>@item.PostDateTime</em>
                         </p>
-                        <div id="approvalBox--@item.Id" style="width: 30px; height: 30px; border: solid 1px #BBBBBB; border-radius: 4px; margin: 10px 10px 0 10px; display: flex;">
+                        <div id="approvalBox--@item.Id" class="approvalBox">
                             @if (item.IsApproved == true)
                             {
-                                <img id="approvalCheck--@item.Id" style="justify-content: center; width: 30px; height: 30px;" src="~/images/checkmark.png" />
+                                <img id="approvalCheck--@item.Id" class="approvalCheckImg" src="~/images/checkmark.png" />
                             }
                         </div>
                     </div>
 
-                    @*  StoryBoard Body *@
-                    <div style="margin:10px; display:flex; align-items:center; flex-direction:row; height:40px; padding: 16px;">
-                        <img style="margin: 10px; border:double 3px #FF4251; width:35px; height: 35px; border-radius: 50%;" src="~/images/@item.ImgPath" asp-append-version="true" />
+                    @*  StoryBoard Client info *@
+                    <div class="repStoryClient">
+                        <img class="repStoryClientImg" src="~/images/@item.ImgPath" asp-append-version="true" />
                         <p><strong>@item.ClientPage.Name</strong></p>
                     </div>
                     <div>
-                        <img style="width:317px; height:280px;" asp-append-version="true" src="~/images/@item.ImgPath" />
+                        <img class="repStoryImg" asp-append-version="true" src="~/images/@item.ImgPath" />
                     </div>
                     <div>
                         <p>
                             <strong>@item.ClientPage.Name</strong>&nbsp;@item.Text
                         </p>
                     </div>                  
-                    <div style="display: flex; align-content:center; justify-content: center;">
+                    <div class="editDeleteContainer">
                         <a asp-route-id=@item.Id asp-controller="StoryBoards" asp-action="Edit">Edit</a>&nbsp;|&nbsp;
                         <a asp-route-id=@item.Id asp-controller="StoryBoards" asp-action="Delete">Delete</a>
                     </div>                 
@@ -64,15 +64,15 @@
     </div>
     <hr/>
             <h3>Client Pages</h3>
-            <div style="display: flex; flex-direction: row; justify-self: flex-end; flex-wrap: wrap;">
+            <div class="clientPagesContainer">
                 @foreach (var item in Model.ClientPageUsers)
                 {
-                    <div style="margin: 30px 30px; width:auto; height:287px; background-color:#FAFAFA; border-radius:3px;">
-                        <a style="color:#345A6D; " asp-controller="ClientPages" asp-action="Details" asp-route-id="@item.ClientPage.Id">
+                    <div class="clientPageCard">
+                        <a class="clientPageLink" asp-controller="ClientPages" asp-action="Details" asp-route-id="@item.ClientPage.Id">
                             <div>
-                                <img style="border-radius:4px 4px 0 0; width:268px; height:250px;" asp-append-version="true" src="~/images/@item.ClientPage.ImgPath" />
+                                <img class="clientPageCardImg" asp-append-version="true" src="~/images/@item.ClientPage.ImgPath" />
                             </div>
-                            <div class="clientPage__card__name" style="justify-content: center;">
+                            <div class="clientPageCardName">
                                 <h5>
                                     @Html.DisplayFor(modelItem => item.ClientPage.Name)
                                 </h5>

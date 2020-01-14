@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,6 +17,7 @@ namespace BackendCapstone.Models
 
         public string Location { get; set; }
 
+        [Display(Name = "Employees Only")]
         public bool IsClosed { get; set; }
 
         public string ImgPath { get; set; }

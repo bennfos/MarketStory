@@ -9,37 +9,39 @@
 <h4>ClientPage</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ClientPage.Id" />
-            <div style="margin: 0 15px 0 0;">
-                <img style="width:300px; height:315px;" asp-append-version="true" src="~/images/@Model.ClientPage.ImgPath" />
-            </div>
-            <div class="form-group">
-                <label asp-for="Img"></label>
-                <input asp-for="Img" type="file">
-                <span asp-validation-for="Img"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ClientPage.Name" class="control-label"></label>
-                <input asp-for="ClientPage.Name" class="form-control" />
-                <span asp-validation-for="ClientPage.Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ClientPage.Description" class="control-label"></label>
-                <textarea asp-for="ClientPage.Description" class="form-control"></textarea>
-                <span asp-validation-for="ClientPage.Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ClientUserId"></label>
-                <select asp-for="ClientUserId" class="form-control" asp-items="Model.ClientUserOptions"></select>
-            </div>
-            <div class="form-group">
-                @Html.HiddenFor(m => m.ClientPage.ImgPath)
-            </div>
-            <div class="form-group">
-                <input asp-page-handler="Upload" type="submit" value="Save" class="btn btn-primary" />
+    <div class="col-md-4 editContainer">
+        <div style="margin: 0 15px 0 0;">
+            <img class="editImg" asp-append-version="true" src="~/images/@Model.ClientPage.ImgPath" />
+        </div>
+        <form asp-action="Edit" enctype="multipart/form-data" class="editForm">
+            <div class="flex-row">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="ClientPage.Id" />
+                <div class="form-group">
+                    <label asp-for="Img"></label>
+                    <input asp-for="Img" type="file">
+                    <span asp-validation-for="Img"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ClientPage.Name" class="control-label"></label>
+                    <input asp-for="ClientPage.Name" class="form-control" />
+                    <span asp-validation-for="ClientPage.Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ClientPage.Description" class="control-label"></label>
+                    <textarea asp-for="ClientPage.Description" class="form-control"></textarea>
+                    <span asp-validation-for="ClientPage.Description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ClientUserId"></label>
+                    <select asp-for="ClientUserId" class="form-control" asp-items="Model.ClientUserOptions"></select>
+                </div>
+                <div class="form-group">
+                    @Html.HiddenFor(m => m.ClientPage.ImgPath)
+                </div>
+                <div class="form-group">
+                    <input asp-page-handler="Upload" type="submit" value="Save" class="btn btn-primary" />
+                </div>
             </div>
         </form>
     </div>
