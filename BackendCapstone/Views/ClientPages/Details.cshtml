@@ -39,7 +39,7 @@
 @if (user.UserTypeId != 3)
 {
     <p>
-        <a asp-controller="StoryBoards" asp-action="Create" asp-route-id=@Model.ClientPage.Id>Create New Story</a>
+        <a class="create" asp-controller="StoryBoards" asp-action="Create" asp-route-id=@Model.ClientPage.Id>Create New Story</a>
     </p>
 }
 

@@ -125,7 +125,7 @@ body {
     margin:10px;
     display: flex;
     flex-direction: row;
-    justify-self: flex-end;
+    justify-content: space-evenly;
     flex-wrap: wrap;
 }
 
@@ -453,7 +453,7 @@ body {
 .eventCardsContainer {
     display: flex;
     flex-direction: row;
-    justify-self: flex-end;
+    justify-content: space-evenly;
     flex-wrap: wrap;
 }
 
@@ -509,4 +509,8 @@ body {
 
 h1 {
     margin: 15px 40px
+}
+
+.create {
+    margin: 0 0 0 50px;
 }
