@@ -4,9 +4,6 @@
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 
-var messageBoxes = document.getElementsByClassName('chatList')
-messageBoxes.scrollTop = messageBoxes.scrollHeight
-
 //Disable send button until connection is established
 
 connection.on("RemoveApproval", function (storyBoardId) {
