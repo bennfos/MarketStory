@@ -61,7 +61,10 @@ namespace BackendCapstone.Controllers
                     .Select(eu => eu.User)
                     .ToListAsync();
 
-                @event.Attendees = attendees;               
+                @event.Attendees = attendees;
+            }
+            else {
+                @event.Attendees = new List<ApplicationUser>();
             }
 
 
@@ -119,7 +122,7 @@ namespace BackendCapstone.Controllers
         public async Task<IActionResult> Create(EventCreateEditViewModel viewModel)
         {
             if (ModelState.IsValid)
-            {
+            {             
                 if (viewModel.Img != null)
                 {
                     var uniqueFileName = GetUniqueFileName(viewModel.Img.FileName);
