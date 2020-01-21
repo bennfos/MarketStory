@@ -4,10 +4,8 @@
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 
-var messageBoxes = document.getElementsByClassName('chatList')
-messageBoxes.scrollTop = messageBoxes.scrollHeight
 
-//Disable send button until connection is established
+
 
 connection.on("RemoveApproval", function (storyBoardId) {
     var approvalCheck = document.getElementById(`approvalCheck--${storyBoardId}`);
@@ -15,39 +13,35 @@ connection.on("RemoveApproval", function (storyBoardId) {
 });
 
 connection.on("ReceiveApproval", function (storyBoardId) {
-    var img = document.createElement("img");
-    img.src = "/images/checkmark.png"
-    img.style.width = "30px";
-    img.style.height = "30px";
-    img.id = `approvalCheck--${storyBoardId}`
-    document.getElementById(`approvalBox--${storyBoardId}`).appendChild(img);
+    var approvalBox = document.getElementById(`approvalBox--${storyBoardId}`)
+    function approvalCheckHTML () {
+        return `
+        <img id = "approvalCheck--${storyBoardId}"
+            src="/images/checkmark.png" 
+            style="width: 30px; height: 30px;"
+         />
+        `
+    }
+    approvalBox.innerHTML += approvalCheckHTML();
 });
 
 connection.on("CallerReceiveMessage", function (storyBoardId, userId, message, timestamp) {
    var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    var encodedMsg = msg;
-    var tsDiv = document.createElement("div")
-    tsDiv.textConent = timestamp
-    tsDiv.style.fontSize = "4px";
-    var div = document.createElement("div");
-    var pMessage = document.createElement("p")
-    var messageList = document.getElementById(`messagesList--${storyBoardId}`)
+   var encodedMsg = msg;
     var input = document.getElementById(`messageInput--${storyBoardId}`);
-    div.style.backgroundColor = "#1D9EF1";
-    div.style.color = "#FFFFFF";
-    div.style.maxWidth = "350px";
-    div.style.minWidth = "15px";
-    div.style.display = "flex";
-    div.style.flexDirection = "row";
-    div.style.alignSelf = "flex-end";
-    div.style.borderRadius = "8px";
-    div.style.margin = "10px";
-    div.style.padding = "8px";
-    pMessage.style.margin = "5px";
-    pMessage.textContent = encodedMsg;  
-    div.appendChild(pMessage);
-    messageList.appendChild(tsDiv);
-    messageList.appendChild(div);
+    var messageList = document.getElementById(`messagesList--${storyBoardId}`)
+    function callerMessageHTML() {
+        return `        
+            <div style="background-color:#1D9EF1; color:#FFFFFF; max-width:350px; 
+                    min-width:15px; display:flex; flex-direction:row; 
+                    align-self:flex-end; border-radius:8px; margin:10px; padding:8px;">
+                <p style="margin: 8px">
+                    ${encodedMsg}
+                </p>
+            </div>
+        `
+    }
+    messageList.innerHTML += callerMessageHTML();
     messageList.scrollTop = messageList.scrollHeight;
     input.value = ""
 });
@@ -57,28 +51,23 @@ connection.on("CallerReceiveMessage", function (storyBoardId, userId, message, t
 connection.on("OthersReceiveMessage", function (storyBoardId, userId, userName, message) {
     var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");   
     var encodedMsg = msg;
-    var div = document.createElement("div");
-    var pUser = document.createElement("p");
-    var pMessage = document.createElement("p")
-    var messageList = document.getElementById(`messagesList--${storyBoardId}`)
     var input = document.getElementById(`messageInput--${storyBoardId}`);
-    div.style.backgroundColor = "#EEEEEE";   
-    div.style.maxWidth = "350px";
-    div.style.minWidth = "15px";
-    div.style.display = "flex";
-    div.style.flexDirection = "row";
-    div.style.alignSelf = "flex-start";
-    div.style.borderRadius = "8px";
-    div.style.margin = "10px";
-    div.style.padding = "8px";
-    pUser.style.fontWeight = "bold";
-    pUser.style.margin = "5px";
-    pMessage.style.margin = "5px";
-    pUser.textContent = userName;
-    pMessage.textContent = encodedMsg;
-    div.appendChild(pUser);
-    div.appendChild(pMessage);
-    messageList.appendChild(div);
+    var messageList = document.getElementById(`messagesList--${storyBoardId}`)
+    function otherMessageHTML() {
+        return `        
+            <div style="background-color:#EEEEEE; max-width:350px; 
+                    min-width:15px; display:flex; flex-direction:row; 
+                    align-self:flex-start; border-radius:8px; margin:10px; padding:8px;">
+                <p style="font-weight:bold; margin:5px">
+                    ${userName}
+                </p>
+                <p style="margin: 5px">
+                    ${encodedMsg}
+                </p>
+            </div>
+        `
+    }
+    messageList.innerHTML += otherMessageHTML();   
     messageList.scrollTop = messageList.scrollHeight;
     input.value = ""
 });
